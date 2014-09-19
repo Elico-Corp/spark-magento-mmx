@@ -1,0 +1,38 @@
+<?php
+$res = array();
+$fields = unserialize(SEARCH_FIELDS);
+foreach($fields as $field) {
+    $products = Mage::getModel('catalog/product')->getCollection()
+                                                 ->addAttributeToSelect($field);
+    if (isset($_POST['category']) and !empty($_POST['category']))  {
+        $category = Mage::getModel('catalog/category')->load((int)$_POST['category']);
+        $products->addCategoryFilter($category);
+    }
+    foreach($fields as $field2) {
+        if($field == $field2)
+            continue;
+        if(isset($_POST[$field2]) and !empty($_POST[$field2])) {
+            $products->addAttributeToFilter($field2, array('eq' => $_POST[$field2]));
+        }
+    }
+
+    $method_name = explode('_', $field);
+    $method_name =  array_map('ucfirst', $method_name);
+    $method_name =  implode('', $method_name);
+    $attribute = $products->getResource()->getAttribute($field);
+    $values = array();
+    $res[$field]['default'] = '-- '. $this->__('Any') .' '. $attribute->getFrontendLabel().' --';
+    foreach($products as $product) {
+        $value = str_replace('"', '', call_user_func(array($product, 'get'.$method_name)));
+        if(empty($value))
+            continue;
+        if(in_array($value, $values)) {
+            continue;
+        }
+        $values[$value] = $value;
+    }
+    asort($values);
+    $res[$field] +=  $values;
+}
+echo json_encode($res);
+?>

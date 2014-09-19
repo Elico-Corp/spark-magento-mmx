@@ -1,0 +1,30 @@
+<div class="block block-slideshow">
+    <div class="block-title">
+        <strong>
+            <span>
+                <?php echo $this->__('Licensors'); ?>
+            </span>
+        </strong>
+    </div>
+    <div class="block-content">
+        <div class="block-slider">
+            <ul class="slides">
+                <?php
+                $json = file_get_contents(IMAGE_SERVER.'licensor-nb');
+                $licensors = json_decode($json);
+                foreach ($licensors as $licensor) {
+                    $name = strtoupper(str_replace(array('-', '_'), ' ',str_replace(array('licensor-', '.png'), '', $licensor)));
+                    $url = str_replace('.png', '', $licensor);
+                ?>
+                <li>    
+                    <a href="/<?php echo $url; ?>">
+                        <img src="<?php echo IMAGE_SERVER.$licensor; ?>" alt="" class="licensor-box-img" />
+                        <h5 class="licensor-box-title"><?php echo $name; ?></h5>
+                    </a>
+                </li>
+                <?php }
+                ?>
+            </ul>
+        </div>
+    </div>
+</div>

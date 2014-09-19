@@ -1,0 +1,37 @@
+<?php
+$method_name = explode('_', $this->field_name);
+$method_name =  array_map('ucfirst', $method_name);
+$method_name =  implode('', $method_name);
+$products = Mage::getModel('catalog/product')->getCollection();
+$products->addAttributeToSelect($this->field_name)
+         ->groupByAttribute($this->field_name)
+         ->setOrder($this->field_name.' ASC')
+         ->load();
+$attribute = $products->getResource()->getAttribute($this->field_name);
+$values = array();
+if($this->field_name != 'model' and $this->field_name != 'model_year'):
+?>
+<div class="input-box" style="clear:both;float:left;">
+    <label class="search_condition"><?php echo $attribute->getFrontendLabel();?></label>
+<?php
+endif;
+?>
+        <select class="ajax_field" name="<?php echo $this->field_name; ?>" id="<?php echo $this->field_name; ?>" >
+                <option value="">-- <?php echo $this->__('Any'); ?> <?php echo $attribute->getFrontendLabel();?> --</option>
+                <?php foreach($products as $product) {
+                    $value = call_user_func(array($product, 'get'.$method_name));
+                    if(in_array($value, $values)) {
+                        continue;
+                    }
+                    $values[] = $value;
+                    if(empty($value))
+                        continue;
+                ?>
+                <option value="<?php echo $value ?>"><?php echo $value ?></option>
+                <?php } ?>
+        </select>
+<?php
+if($this->field_name != 'custom_manufacturer' and $this->field_name != 'model'):
+?>
+</div>
+<?php endif; ?>
