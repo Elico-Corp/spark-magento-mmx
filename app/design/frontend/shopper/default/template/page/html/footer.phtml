@@ -50,10 +50,20 @@ try {
     </div>
     <div class="footer-info">
         <div class="row clearfix facebook">
-            <div class="grid_6">
+            <div class="grid_3">
                 <h4><?php echo $this->__('News');?></h4>
                 <div class="block-content">
                     <?php echo $this->getChildHtml('recent_posts_footer'); ?>
+                </div>
+            </div>
+            <div class="grid_3 information">
+                <h4><?php echo $this->__('Professional');?></h4>
+                <div class="block-content clearfix">
+                   <ul>
+                       <li>
+                        <a href="/customer/account/login/"><?php echo $this->__('Log In'); ?></a>
+                       </li>
+                   </ul>             
                 </div>
             </div>
             <div class="grid_3 information">
