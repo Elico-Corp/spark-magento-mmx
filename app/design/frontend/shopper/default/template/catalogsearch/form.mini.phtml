@@ -45,7 +45,9 @@ if (isset($config['design']['search_field']) && $config['design']['search_field'
                 //]]>
             </script>
         </form>
-        <a href="/catalogsearch/advanced/">Advanced Search</a>
+        <?php if(Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+            <a href="/catalogsearch/advanced/">Advanced Search</a>
+        <?php endif;?>
     </div>
 </div>
 <?php else : ?>
