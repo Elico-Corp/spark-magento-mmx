@@ -109,3 +109,8 @@ $config_slideshow = Mage::getStoreConfig('shopperslideshow', Mage::app()->getSto
     ?>
     //]]>
 </script>
+<?php if(!Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+<style type="text/css">
+    .add-to-links { display:none;}
+</style>
+<?php endif; ?>
