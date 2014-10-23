@@ -28,6 +28,7 @@
 /**
  * @see Mage_Page_Block_Template_Links
  */
+if(Mage::getSingleton('customer/session')->isLoggedIn()):
 ?>
 <?php
 $additional_links = false;
@@ -67,4 +68,5 @@ if (Mage::getStoreConfig('shoppersettings/header/top_custom_link')) {
     
     <?php endif; ?>
 </ul>
+<?php endif; ?>
 <?php endif; ?>
