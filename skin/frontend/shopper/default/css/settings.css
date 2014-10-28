@@ -572,7 +572,7 @@ website:   	http://www.themepunch.com
 /************************************
 		-	TP BANNER TIMER		-
 *************************************/
-.tp-bannertimer								{	width:100%; height:3px; background:#322c29;position:absolute; z-index:200;}
+.tp-bannertimer								{	width:100%; height:3px; background:#322c29;position:absolute; z-index:80;}
 .tp-bannertimer.tp-bottom					{	bottom:0px !important;height:3px;}
 
 

@@ -512,7 +512,7 @@ footer address{ margin-left:10px; }
 .nav-container .nav-top-title.active div.icon span {background:#fff; }
 .nav-container li.parent em {float:right; display:none; width:36px; text-align:center; font-style:normal; font-weight:700; }
 .nav-container li.parent em:hover {cursor:pointer; background:#fff; color:#000 !important; }
-#queldoreiNav { margin:31px 0 34px 46px; padding:0; position:relative; border:none; float:left; }
+#queldoreiNav { margin:31px 0 34px 0; padding:0; position:relative; border:none; float:left; }
 /*#queldoreiNav { width:750px; margin:31px 0 34px 46px; padding:0; position:relative; border:none; float:left; }*/
 .search-field #queldoreiNav {width:560px}
 .below-logo #queldoreiNav {width:auto; margin:0 0 10px 3px}
@@ -528,8 +528,8 @@ footer address{ margin-left:10px; }
 
 /* 1st Level */
 #queldoreiNav>li { float:left; position:relative; margin:0 3px 3px;}
-#queldoreiNav>li>a { position:relative; float:left; padding:0; color:#373230; font-size:14px; font-family:"Myriad Pro",sans-serif; font-weight:700; line-height:36px; letter-spacing:-0.1em; text-transform:uppercase; }
-#queldoreiNav>li>a>span{padding:0px 10px; border-top:3px solid transparent;}
+#queldoreiNav>li>a { position:relative; float:left; padding:0; color:#373230; font-size:18px; font-family:"Myriad Pro",sans-serif; font-weight:700; line-height:36px; letter-spacing:-0.1em; text-transform:uppercase; }
+#queldoreiNav>li>a>span{padding:0px 5px; border-top:3px solid transparent;}
 #queldoreiNav>li:hover>a>span,
 #queldoreiNav>li.over>a>span,
 #queldoreiNav>li.active>a>span { background:#fff; }
@@ -564,7 +564,7 @@ footer address{ margin-left:10px; }
 #queldoreiNav ul div.sub-wrapper ul{ padding:16px; width:auto; }
 #queldoreiNav ul li { float:none; border:none; width:210px; line-height:28px; position:relative; }
 #queldoreiNav ul li.last {}
-#queldoreiNav ul li a {float:none; padding:0 10px; font-family:Arial, serif; font-size:12px; font-weight:normal; color:#322c29 !important; background:transparent none; }
+#queldoreiNav ul li a {float:none; padding:0 10px; font-family:Arial, serif; font-size:15px; font-weight:normal; color:#322c29 !important; background:transparent none; }
 #queldoreiNav ul li.active > a {background:#322c29 !important; color:#fff !important; }
 #queldoreiNav ul li.over > a, #queldoreiNav ul li a:hover {background:#f5f4f4; }
 
@@ -864,7 +864,7 @@ div.alert button:hover{ cursor:pointer; background-position:0 -9px;}
 .products-grid .product-name:hover {color:#000; text-decoration:none;}
 .products-grid .price-box {margin:0px 0 5px 4px; line-height:14px; letter-spacing:-1.2px }
 /** gird hover mode **/
-.products-grid .regular {height:350px;}
+.products-grid .regular {height:400px;}
 .products-grid .hover {display:none; position:absolute; z-index:2; top:-9px; left:-9px; width:252px; padding:0; margin:0 30px 30px 0; background:#fff; border:9px solid #fff; border-radius:3px; -webkit-border-radius:3px; -moz-border-radius:3px;
     -webkit-box-shadow:0px 0px 46px 12px rgba(0, 0, 0, 0.09);
     -moz-box-shadow:0px 0px 46px 12px rgba(0, 0, 0, 0.09);
@@ -1921,3 +1921,6 @@ html[xmlns] .slides {display: block;}
   h2, h3 { page-break-after: avoid; }
 } 
 
+.footer-info {
+  font-size:15px;
+}

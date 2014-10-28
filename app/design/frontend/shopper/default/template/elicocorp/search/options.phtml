@@ -21,7 +21,7 @@ foreach($fields as $field) {
     $method_name =  implode('', $method_name);
     $attribute = $products->getResource()->getAttribute($field);
     $values = array();
-    $res[$field]['default'] = '-- '. $this->__('Any') .' '. $attribute->getFrontendLabel().' --';
+    $res[$field]['default'] = '-- '. $this->__('All') .' '. $attribute->getFrontendLabel().' --';
     foreach($products as $product) {
         $value = str_replace('"', '', call_user_func(array($product, 'get'.$method_name)));
         if(empty($value))
