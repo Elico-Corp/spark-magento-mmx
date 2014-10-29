@@ -25,7 +25,7 @@
          </li>
      <?php endif; ?>
         <?php
-        echo preg_replace('/\<span\>([a-z0-9]+) ([a-z0-9]+)\<\/span\>/i', '<span>$1 &nbsp;$2</span>', $_menu);
+        echo preg_replace('/\<span\>([a-z0-9]+) ([a-z0-9]+)\<\/span\>/i', '<span>$1 &nbsp;$2</span>', str_replace('our-range.html', 'search', $_menu));
         $custom_tab = Mage::getModel('cms/block')
 	        ->setStoreId( Mage::app()->getStore()->getId() )
 	        ->load('shopper_navigation_block');

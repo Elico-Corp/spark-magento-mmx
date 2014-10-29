@@ -17,7 +17,7 @@ if($this->field_name != 'model' and $this->field_name != 'model_year'):
 endif;
 ?>
         <select class="ajax_field" name="<?php echo $this->field_name; ?>" id="<?php echo $this->field_name; ?>" >
-                <option value="">-- <?php echo $this->__('Any'); ?> <?php echo $attribute->getFrontendLabel();?> --</option>
+                <option value="">-- <?php echo $this->__('All'); ?> <?php echo $attribute->getFrontendLabel();?> --</option>
                 <?php foreach($products as $product) {
                     $value = call_user_func(array($product, 'get'.$method_name));
                     if(in_array($value, $values)) {
