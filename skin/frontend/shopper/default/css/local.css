@@ -216,8 +216,7 @@ h1, h2, h3 { color:#000; color:rgba(0,0,0,0.75); letter-spacing:-0.1em; font-wei
 .std ul.buttons li { background:none; float:left; padding:0; margin:0 3px 0;}
 .std ul.buttons li button.button span {text-transform: capitalize; font-size:12px;}
 
-.page-title { border:none; padding:0 0 58px;margin:0 15px; }
-.col2-left-layout .page-title { margin-left:-285px; }
+.page-title { border:none; padding:0 0 58px;margin:90px 0 0 0; }
 .page-popup .page-title { padding:0 0 18px; }
 .page-title h1, .page-title h2 {text-transform: uppercase; font-size:36px; font-family:"Myriad Pro",serif; font-weight:400; line-height:30px; letter-spacing:-1.5px }
 .page-head-alt {margin:0 0 20px; padding:0 0 15px; border-bottom:1px solid #e6e6e6;}

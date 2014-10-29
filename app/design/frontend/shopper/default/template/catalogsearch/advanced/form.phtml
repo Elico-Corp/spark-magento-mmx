@@ -43,7 +43,7 @@
             <li>
                 <label for="category_search_field">Search by Category:</label>
                 <select name="category" id="category_search_field">
-                    <option value="">-- Any Category --</option>
+                    <option value="">-- All Category --</option>
                     <?php foreach ($this->getStoreCategories() as $_category): ?>
                     <?php if($_category->hasChildren()): ?>
                     <option class="parent-cat" value="<?php echo $_category->getId(); ?>"><?php echo $_category->getName();?></option>
