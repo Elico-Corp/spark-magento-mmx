@@ -1923,3 +1923,5 @@ html[xmlns] .slides {display: block;}
 .footer-info {
   font-size:15px;
 }
+
+.products-grid .item .hover { height: 400px; }
