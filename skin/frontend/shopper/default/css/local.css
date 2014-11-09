@@ -1923,3 +1923,7 @@ html[xmlns] .slides {display: block;}
 .footer-info {
   font-size:15px;
 }
+
+.breadcrumbs {
+  display: none;
+}
