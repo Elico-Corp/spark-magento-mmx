@@ -33,6 +33,7 @@ if (isset($config['design']['search_field']) && $config['design']['search_field'
         <div class="search-top-title"><span class="icon"></span><?php echo $this->__('Search'); ?></div>
         <form id="search_mini_form" action="<?php echo $this->helper('catalogsearch')->getResultUrl() ?>" method="get">
             <div class="form-search">
+                <span>Search</span>
                 <input id="search" type="text" name="<?php echo $this->helper('catalogsearch')->getQueryParamName() ?>"
                        value="<?php echo $this->helper('catalogsearch')->getEscapedQueryText() ?>" class="input-text"/>
                 <button type="submit" title="<?php echo $this->__('Search') ?>"></button>
