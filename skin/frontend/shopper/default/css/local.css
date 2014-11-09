@@ -1925,3 +1925,7 @@ html[xmlns] .slides {display: block;}
 }
 
 .products-grid .item .hover { height: 400px; }
+
+.breadcrumbs {
+  display: none;
+}
