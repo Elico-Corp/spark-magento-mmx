@@ -222,7 +222,7 @@ h1, h2, h3 { color:#000; color:rgba(0,0,0,0.75); letter-spacing:-0.1em; font-wei
 .page-head-alt {margin:0 0 20px; padding:0 0 15px; border-bottom:1px solid #e6e6e6;}
 .page-head-alt h3 {text-transform: uppercase; font-size: 24px; color:#4c4c4c;}
 .page-title-bg {position:absolute; width:100%; background:#f5f5f3;}
-.product-category-title {margin:-30px 0 30px; line-height:36px; font-size:36px; padding:20px 0; color:#322c29; border-top:1px solid; border-top-color:#e3e3e3; border-top-color:rgba(227,227,227,0.61); }
+.product-category-title {margin:0px 0 30px; line-height:36px; font-size:36px; padding:20px 0; color:#322c29; border-top:1px solid; border-top-color:#e3e3e3; border-top-color:rgba(227,227,227,0.61); }
 
 .buttons-set {padding:0; margin:0 15px; text-align:right;}
 .buttons-set button.button {float:left;}

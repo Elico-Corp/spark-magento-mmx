@@ -18,14 +18,36 @@
 <?php if($_menu): ?>
 <div class="nav-container">
     <div class="nav-top-title"><div class="icon"><span></span><span></span><span></span></div><a href="#"><?php echo $this->__('Navigation'); ?></a></div>
+    <?php 
+    $yom = Mage::getModel('cms/block')
+        ->setStoreId( Mage::app()->getStore()->getId() )
+        ->load('shopper_navigation_block');
+    ?>
     <ul id="queldoreiNav">
 	    <?php if (Mage::getStoreConfig('shoppersettings/navigation/home')): ?>
-         <li class="level0 level-top">
+         <?php $_anyActive = false; foreach ($this->getStoreCategories() as $_category) { $_anyActive = $_anyActive || $this->isCategoryActive($_category); }
+         $_menu = preg_replace('/\<span\>([a-z0-9]+) ([a-z0-9]+)\<\/span\>/i', '<span>$1 &nbsp;$2</span>', str_replace('our-range.html', 'search', $_menu));
+         if (strpos(Mage::helper('core/url')->getCurrentUrl(),'search') != false ) {
+            $_anyActive = true;
+            $_menu = str_replace('level0 nav-1 level-top first parent', 'level0 nav-1 level-top first parent active', $_menu);
+         } elseif (strpos(Mage::helper('core/url')->getCurrentUrl(),'about-us.html') != false ) {
+            $_anyActive = true;
+        ?>
+            <script type="text/javascript">
+                jQuery(document).ready(function () {
+                    jQuery('#queldoreiNav li:last').addClass('active');
+                });
+            </script>
+        <?php
+         }
+        ?>
+         <li class="level0 level-top <?php echo !$_anyActive ? 'active' : '' ?>">
          	<a href="<?php echo $this->getBaseUrl(); ?>"><span><?php echo $this->__('Home'); ?></span></a>
          </li>
      <?php endif; ?>
         <?php
-        echo preg_replace('/\<span\>([a-z0-9]+) ([a-z0-9]+)\<\/span\>/i', '<span>$1 &nbsp;$2</span>', str_replace('our-range.html', 'search', $_menu));
+        echo $_menu;
+        
         $custom_tab = Mage::getModel('cms/block')
 	        ->setStoreId( Mage::app()->getStore()->getId() )
 	        ->load('shopper_navigation_block');
