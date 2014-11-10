@@ -209,6 +209,7 @@
 			<catalog>
                 <categories_filter>0</categories_filter>
                 <shopby_num>5</shopby_num>
+                <grid_columns_2col>2</grid_columns_2col>
                 <grid_columns_2col>3</grid_columns_2col>
                 <grid_columns_1col>4</grid_columns_1col>
                 <bestsellers></bestsellers>

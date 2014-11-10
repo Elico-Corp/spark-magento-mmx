@@ -892,6 +892,14 @@ div.alert button:hover{ cursor:pointer; background-position:0 -9px;}
 .products-grid .add-to-links a:hover {text-decoration:none;}
 .products-grid .add-to-links a.link-compare {}
 
+
+/* two_columns 2 products per row */
+.two_columns_2 {}
+.two_columns_2 li.item {width:402px; height:550px;}
+.two_columns_2 .hover {width:402px; height:550px;}
+.two_columns_2 .product-name {font-size:18px}
+.two_columns_2 .product-image img {width: 100%}
+.two_columns_2 .quick-view { top:18%; left:35%; height:50px; line-height:50px; font-size:18px; }
 /* two_columns 3 products per row */
 .two_columns_3 {}
 /* two_columns 4 products per row */
