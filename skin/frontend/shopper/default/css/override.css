@@ -29,7 +29,7 @@
     padding-left: 6px;
 }
 .input-box select{
-    width: 160px;
+    width: 100%;
 }
 
 #overlay {
