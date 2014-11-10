@@ -155,7 +155,7 @@ td { vertical-align: top; }
    ========================================================================== */
 .chromeframe { margin: 0.2em 0; background: #ccc; color: black; padding: 0.2em 0; }
 /* ==|== primary styles ===================================================== */
-body { font-size:12px; font-family:Arial, Helvetica, sans-serif; color:#1b1a19; background:#fafafa; border-top:5px solid #322c29; }
+body { font-size:18px; font-family:Arial, Helvetica, sans-serif; color:#1b1a19; background:#fafafa; border-top:5px solid #322c29; }
 a { color:#828282; text-decoration:none; outline: none; }
 a:hover { color:#828282; text-decoration:underline; }
 
@@ -204,11 +204,11 @@ a.button_white:hover span span, button.button_white:hover span span { }
 .btn-edit { background-image:url(../images/btn_edit.png);}
 .btn-remove { background-image:url(../images/btn_remove.png);}
 
-h1, h2, h3 { color:#000; color:rgba(0,0,0,0.75); letter-spacing:-0.1em; font-weight:400; }
+h1, h2, h3 { color:#000; color:rgba(0,0,0,0.75); letter-spacing:-0.1em; font-weight:400;}
 
 .page-404 {}
 .std dl dt{ color:#4c4c4c;}
-.std h1, .std h2, .std h3, .std h4 {font-size:24px; font-family:"Myriad Pro",serif; font-weight:400; text-transform:uppercase;}
+.std h1, .std h2, .std h3, .std h4 {font-size:24px; font-family:"Myriad Pro",serif; font-weight:600; text-transform:uppercase;}
 .std h2 {font-size:24px;}
 .std h3, .std h3 {font-size:18px;}
 .std ul.disc {list-style: none; margin:10px 0;}
@@ -335,7 +335,7 @@ header { position:relative; z-index:10020;
          box-shadow:0px 0px 10px 0px rgba(0, 0, 0, 0.15);}
 .logo { float:none; display: inline-block; }
 header a.logo {  text-decoration:none !important; margin:34px 0; }
-header a.logo img{ max-width:100%; height:auto;width:auto\9; /* ie8 */ }
+header a.logo img{ max-width:100%; width:260px; height:auto;width:auto\9; /* ie8 */ }
 header .logo strong { position:absolute; top:-999em; left:-999em; width:0; height:0; font-size:0; line-height:0; text-indent:-999em; overflow:hidden; }
 header h1.logo {padding:0;}
 header.fixed {position:fixed; top:0; width:100%; background:#fff;}
@@ -882,7 +882,7 @@ div.alert button:hover{ cursor:pointer; background-position:0 -9px;}
 .products-grid .hover .button-container button.button span span {padding:0; font-size:12px; color:#4d4d4d; text-transform:none; }
 .products-grid .hover .button-container button.button span span em {display:inline-block; float:left; margin:0 13px 0 0; width:24px; height:19px;  background:#97d2c9 url("../images/icon_cart_listing_mask.png") 0 0 no-repeat;}
 .products-grid .hover .button-container button.button:hover span span em {background-color:#393431;}
-.products-grid .add-to-links {width:270px; height:40px; margin:9px -9px -9px; background:#fcfcfc; text-align:center;
+.products-grid .add-to-links {width:420px; height:40px; margin:9px -9px -9px; background:#fcfcfc; text-align:center;
     -webkit-box-shadow:inset 0px 5px 6px -4px rgba(0, 0, 0, 0.15);
     -moz-box-shadow:inset 0px 5px 6px -4px rgba(0, 0, 0, 0.15);
     box-shadow:inset 0px 5px 6px -4px rgba(0, 0, 0, 0.15);}
@@ -1106,7 +1106,7 @@ div.alert button:hover{ cursor:pointer; background-position:0 -9px;}
 #product-customer-reviews .ratings-list{margin:10px 0 10px 5px;}
 #product-customer-reviews .ratings-list td{line-height: 14px; padding:0 5px 0 0; }
 .add-review {border-top:1px solid #ededed; padding-top:30px;}
-.add-review h3.title{font-size:14px; font-family:"Myriad Pro", serif; padding-right: 15px; margin:0 0 20px;}
+.add-review h3.title{font-size:20px; font-family:"Myriad Pro", serif; padding-right: 15px; margin:0 0 20px;}
 .add-review .data-table th{ padding:12px;}
 .add-review .data-table td{ padding:12px; text-align: center;}
 .add-review .form-list label{ color:#565656}
@@ -1205,7 +1205,7 @@ div.alert button:hover{ cursor:pointer; background-position:0 -9px;}
 .block .block-title {border:0; padding:0 0 22px; margin:0 0 25px; color:#000; color:rgba(0,0,0,0.75); border-bottom:1px solid #e8e8e8; }
 .block .block-title strong {font-size:22px; font-weight:400; font-family:"Myriad Pro", serif; text-transform:uppercase; letter-spacing:-1.2px; line-height:21px;}
 .block .block-title small {font-size:70%}
-.block .block-subtitle {margin:0 0 10px; padding: 0 0 25px; border-bottom: 1px solid #f4f4f4; font-size:14px;}
+.block .block-subtitle {margin:0 0 10px; padding: 0 0 25px; border-bottom: 1px solid #f4f4f4; font-size:18px;}
 .block .block-content {padding:0; margin:0;}
 .block .block-content p {padding:0 0 10px;}
 .block .block-content .actions {margin:0; padding:0; text-align:center; }
@@ -1332,13 +1332,13 @@ div.alert button:hover{ cursor:pointer; background-position:0 -9px;}
 
 
 /* Product Tabs */
-.product-tabs-container {}
-.product-tabs-container h2.tab-heading {display:none}
+.product-tabs-container {font-size:18px;}
+.product-tabs-container h2.tab-heading {display:none;}
 .product-tabs { margin:25px 0 0; border:0; }
 .product-tabs li { float:left; border:1px solid #e1e1e1; height:43px; line-height:43px; margin-right:7px; position:relative;  }
 .product-tabs li.first { }
 .product-tabs li.last { }
-.product-tabs a { display:block; height:47px; padding:0px 20px; color:#000; color:rgba(0,0,0,0.67); font-size:16px; font-family:"Myriad Pro", serif; background: #f5f5f5; }
+.product-tabs a { display:block; height:47px; padding:0px 20px; color:#000; color:rgba(0,0,0,0.67); font-size:24px; font-family:"Myriad Pro", serif; background: #f5f5f5; }
 .product-tabs a:hover { background-color:#fff; text-decoration:none; }
 .product-tabs li.active {border:none; border-top:4px solid #97D2C9; z-index:3; margin-top:-4px; height:46px; background:#fff;
     border-radius:2px; -webkit-border-radius:2px; -moz-border-radius:2px;
@@ -1414,7 +1414,7 @@ div.alert button:hover{ cursor:pointer; background-position:0 -9px;}
 .product-view .product-options-bottom {background: transparent; margin:10px 0; padding:0;}
 .product-view .product-shop .product-options-bottom {margin:0; float:left;}
 .product-view .product-shop .product-options-bottom .price-box {float:none; margin:0 0 15px; }
-.product-view .product-img-box {width:363px; position:relative; margin: 0 30px 0 0;}
+.product-view .product-img-box {width:726px; position:relative; margin: 0 30px 0 0;}
 .product-view .product-img-box .zoom {width: 210px; background:none; }
 #track { background: url("../images/slider_bg.gif") no-repeat scroll 50% 50% transparent; }
 
@@ -1929,11 +1929,19 @@ html[xmlns] .slides {display: block;}
 } 
 
 .footer-info {
-  font-size:15px;
+  font-size:18px;
 }
 
-.products-grid .item .hover { height: 400px; }
+/*.products-grid .item .hover { height: 400px; }*/
 
 .breadcrumbs {
   display: none;
+}
+
+.block-title {
+  text-align: center !important;
+}
+
+#elico_search {
+  font-size: 18px;
 }

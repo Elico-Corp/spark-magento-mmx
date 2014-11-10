@@ -21,7 +21,10 @@ foreach($fields as $field) {
     $method_name =  implode('', $method_name);
     $attribute = $products->getResource()->getAttribute($field);
     $values = array();
-    $res[$field]['default'] = '-- '. $this->__('All') .' '. $attribute->getFrontendLabel().' --';
+    $res[$field]['default'] = '-- '. $this->__('All') .' '. $attribute->getFrontendLabel().'s --';
+    if($field == 'driver') {
+        $res[$field]['default'] = '-- '. $this->__('All').' Drivers --';
+    }
     foreach($products as $product) {
         $value = str_replace('"', '', call_user_func(array($product, 'get'.$method_name)));
         if(empty($value))
