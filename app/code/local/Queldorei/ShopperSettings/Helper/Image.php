@@ -38,7 +38,7 @@ class Queldorei_ShopperSettings_Helper_Image extends Mage_Core_Helper_Abstract
 
     public function getMainSize()
     {
-        return array($this->_mainWidth, $this->_mainHeight);
+        return array($this->_mainWidth * 1.2, $this->_mainHeight * 1.2);
     }
 
     public function getThumbSize()
