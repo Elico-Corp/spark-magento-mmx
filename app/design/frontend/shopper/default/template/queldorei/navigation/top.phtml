@@ -29,13 +29,19 @@
          $_menu = preg_replace('/\<span\>([a-z0-9]+) ([a-z0-9]+)\<\/span\>/i', '<span>$1 &nbsp;$2</span>', str_replace('our-range.html', 'search', $_menu));
          if (strpos(Mage::helper('core/url')->getCurrentUrl(),'search') != false ) {
             $_anyActive = true;
-            $_menu = str_replace('level0 nav-1 level-top first parent', 'level0 nav-1 level-top first parent active', $_menu);
-         } elseif (strpos(Mage::helper('core/url')->getCurrentUrl(),'about-us.html') != false ) {
+        ?>
+            <script type="text/javascript">
+                jQuery(document).ready(function () {
+                    jQuery('#queldoreiNav li').eq(1).addClass('active');
+                });
+            </script>
+        <?php
+         } elseif (strpos(Mage::helper('core/url')->getCurrentUrl(),'about_us') != false ) {
             $_anyActive = true;
         ?>
             <script type="text/javascript">
                 jQuery(document).ready(function () {
-                    jQuery('#queldoreiNav li:last').addClass('active');
+                    jQuery('#queldoreiNav li').eq(-2).addClass('active');
                 });
             </script>
         <?php

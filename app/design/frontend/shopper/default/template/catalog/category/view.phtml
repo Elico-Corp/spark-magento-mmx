@@ -40,9 +40,8 @@
         $_imgHtml = $_helper->categoryAttribute($_category, $_imgHtml, 'image');
     }
 ?>
-<div class="std"><h1><?php echo $_category->getName(); ?></h1></div>
+<div class="std" style="margin-top:20px"><h1><?php echo $_category->getName(); ?></h1></div>
 <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
-
 <?php if($_imgUrl): ?>
     <?php echo $_imgHtml ?>
 <?php endif; ?>

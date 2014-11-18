@@ -203,7 +203,8 @@ class ElicoCorp_OpenERPConnector_Model_Wishlist_Api extends Mage_Checkout_Model_
         $wishlist = $wishlist_obj->toArray();
         $items =  $wishlist_obj->getItemCollection()->toArray();
         $customer_obj = Mage::getModel('customer/customer')->load($wishlist['customer_id']);
-        $wishlist['store_id'] = $customer_obj->getStore()->getId();
+        $website_obj = Mage::getModel('core/website')->load($customer_obj->getWebsiteId());
+        $wishlist['store_id'] = $website_obj->getDefaultGroup()->getDefaultStoreId();
         $wishlist['website_id'] = $customer_obj->getStore()->getWebsite()->getId();
         $wishlist['created_at'] = date("Y-m-d H:i:s");            
 
