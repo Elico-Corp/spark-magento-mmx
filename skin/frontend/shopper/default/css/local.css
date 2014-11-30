@@ -340,7 +340,7 @@ header .logo strong { position:absolute; top:-999em; left:-999em; width:0; heigh
 header h1.logo {padding:0;}
 header.fixed {position:fixed; top:0; width:100%; background:#fff;}
 header.fixed a.logo { margin:14px 0; }
-header.fixed #queldoreiNav, header.fixed #nav {margin:11px 0 14px 46px;}
+/*header.fixed #queldoreiNav, header.fixed #nav {margin:11px 0 14px 46px;}*/
 
 .cart-top-container {float:right; position:relative; margin:0px 50px 0 4px;}
 .cart-top {}
@@ -833,10 +833,13 @@ div.alert button:hover{ cursor:pointer; background-position:0 -9px;}
 .toolbar-dropdown ul li a:hover, .toolbar-dropdown ul li.selected a { text-decoration:none; color:#97d2c9;}
 
 .category-title { display: none; }
-.category-image { width:100%; overflow:hidden; margin:0 0 30px; text-align:center; }
-.category-image img {max-width:100%; width:auto\9; /* ie8 */}
-.category-description { border:1px solid; border-color:#e3e3e3; border-color:rgba(227,227,227,0.61); margin:0 0 20px 0; padding:20px; line-height:18px; text-align:center; color:#808080; }
-.category-description h1 {display:block; margin:0; font-size:24px; font-family:"Myriad Pro", sans-serif; font-style:normal; color:#000; color:rgba(0,0,0,0.67); text-transform:uppercase;}
+/*.category-image { width:100%; overflow:hidden; margin:0 0 30px; text-align:center; }*/
+/*.category-image img {max-width:100%; width:auto\9; }*/
+.category-image {display: none;}
+.category-description {line-height:18px; text-align:left; color:#808080; }
+/*.category-description { border:1px solid; border-color:#e3e3e3; border-color:rgba(227,227,227,0.61); margin:0 0 20px 0; padding:20px; line-height:18px; text-align:left; color:#808080; }
+*//*.category-description h1 {display:block; margin:0; font-size:24px; font-family:"Myriad Pro", sans-serif; font-style:normal; color:#000; color:rgba(0,0,0,0.67); text-transform:uppercase;}*/
+.category-description h1 {display:none;}
 .category-description p {margin:22px 0 0;}
 .category-description strong {color:#000; color:rgba(0,0,0,0.67); font-family:"Myriad Pro", sans-serif; font-style:normal; }
 .category-description img{ max-width:100%; height:auto;width:auto\9; /* ie8 */ }

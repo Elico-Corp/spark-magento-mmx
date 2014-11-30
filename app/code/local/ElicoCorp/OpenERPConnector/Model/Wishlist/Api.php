@@ -112,6 +112,8 @@ class ElicoCorp_OpenERPConnector_Model_Wishlist_Api extends Mage_Checkout_Model_
 
         foreach ($products as $productId => $product) {
             $_product = Mage::getModel('catalog/product')->load($productId);
+            if($product['qty'] == 0)
+                continue;
             $rowTotal = $_product->getPrice() * $product['qty'];
             $orderItem = Mage::getModel('sales/order_item')
                 ->setStoreId($storeId)
