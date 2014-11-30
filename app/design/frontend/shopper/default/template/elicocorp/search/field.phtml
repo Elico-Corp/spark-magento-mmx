@@ -9,7 +9,7 @@ $products->addAttributeToSelect($this->field_name)
          ->load();
 $attribute = $products->getResource()->getAttribute($this->field_name);
 $values = array();
-if($this->field_name != 'model' and $this->field_name != 'model_year'):
+if($this->field_name != 'model' and $this->field_name != 'model_year' and $this->field_name != 'race_edition_year'):
 ?>
 <div class="input-box" style="clear:both;float:left;">
     <label class="search_condition"><?php echo $attribute->getFrontendLabel();?></label>
@@ -39,7 +39,7 @@ endif;
                 <?php } ?>
         </select>
 <?php
-if($this->field_name != 'custom_manufacturer' and $this->field_name != 'model'):
+if($this->field_name != 'custom_manufacturer' and $this->field_name != 'model' and $this->field_name != 'race_edition'):
 ?>
 </div>
 <?php endif; ?>

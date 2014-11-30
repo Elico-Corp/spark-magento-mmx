@@ -75,3 +75,16 @@
 .licensor-table img {
     width: 250px;
 }
+
+.quick-view {
+    display:none !important;
+}
+
+h1, h2, h3, h4, .level0 a span {
+  word-spacing: 5px;
+  font-weight: 600 !important;
+}
+
+#category-img {
+    display:none;
+}
