@@ -224,6 +224,10 @@
                         <title>Retrieve options of attributes</title>
                         <method>options</method>
                     </options>
+                    <addOption translate="title" module="catalog">
+                        <title>Add option</title>
+                        <method>addOption</method>
+                    </addOption>
                 </methods>
                 <faults>
                 </faults>

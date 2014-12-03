@@ -105,5 +105,88 @@ class Openlabs_OpenERPConnector_Model_Olcatalog_Product_Attribute extends Mage_C
         }
         return $options;
     }
+
+    public function addOption($attribute, $data)
+    {
+        $model = $this->_getAttribute($attribute);
+
+        if (!$model->usesSource()) {
+            $this->_fault('invalid_frontend_input');
+        }
+
+        /** @var $helperCatalog Mage_Catalog_Helper_Data */
+        $helperCatalog = Mage::helper('catalog');
+
+        $optionLabels = array();
+        foreach ($data['label'] as $label) {
+            $storeId = $label['store_id'];
+            $labelText = $helperCatalog->stripTags($label['value']);
+            if (is_array($storeId)) {
+                foreach ($storeId as $multiStoreId) {
+                    $optionLabels[$multiStoreId] = $labelText;
+                }
+            } else {
+                $optionLabels[$storeId] = $labelText;
+            }
+        }
+        // data in the following format is accepted by the model
+        // it simulates parameters of the request made to
+        // Mage_Adminhtml_Catalog_Product_AttributeController::saveAction()
+        $modelData = array(
+            'option' => array(
+                'value' => array(
+                    'option_1' => $optionLabels
+                ),
+                'order' => array(
+                    'option_1' => (int) $data['order']
+                )
+            )
+        );
+        if ($data['is_default']) {
+            $modelData['default'][] = 'option_1';
+        }
+        $old_options = $model->getSource()->getAllOptions();
+        $model->addData($modelData);
+        try {
+            $model->save();
+        } catch (Exception $e) {
+            $options = array();
+            $this->_fault('unable_to_add_option', $e->getMessage());
+        }
+
+        $setup = new Mage_Eav_Model_Entity_Setup('core_setup');
+        $optionTable = $setup->getTable('eav/attribute_option');
+ 
+        $lastInsertId = $this->_getLastInsertId($optionTable, 'option_id', intval($attribute));
+
+        return $lastInsertId;
+        // return $lastInsertId;
+    }
+
+    protected function _getLastInsertId($tableName, $primaryKey, $attribute_id)
+    {
+        //SELECT MAX(id) FROM table
+        $db = Mage::getModel('core/resource')->getConnection('core_read');
+        $result = $db->raw_fetchRow("SELECT MAX(`{$primaryKey}`) as LastID FROM `{$tableName}` WHERE attribute_id = ".$attribute_id);
+        return $result['LastID'];
+    }
+
+    protected function _getAttribute($attribute)
+    {
+        $model = Mage::getResourceModel('catalog/eav_attribute')
+            ->setEntityTypeId($this->_entityTypeId);
+
+        if (is_numeric($attribute)) {
+            $model->load(intval($attribute));
+        } else {
+            $model->load($attribute, 'attribute_code');
+        }
+
+        if (!$model->getId()) {
+            $this->_fault('not_exists');
+        }
+
+        return $model;
+    }
 }
 ?>

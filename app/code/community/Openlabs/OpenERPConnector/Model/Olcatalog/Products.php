@@ -134,6 +134,10 @@ class Openlabs_OpenERPConnector_Model_Olcatalog_Products extends Mage_Catalog_Mo
             );
 
             foreach ($product->getTypeInstance(true)->getEditableAttributes($product) as $attribute) {
+                    //$attribute = Mage::getModel('eav/entity_attribute')->load( $your_attribute_id );
+                    if ( $attribute->getAttributeCode() == 'country' ){
+                            return $attribute->getFrontendInput();
+                    }
                     $data[$attribute->getAttributeCode()] = $product->getData($attribute->getAttributeCode());
             }
             $result[]=$data;
@@ -167,6 +171,7 @@ class Openlabs_OpenERPConnector_Model_Olcatalog_Products extends Mage_Catalog_Mo
         }
 
         foreach ($product->getTypeInstance(true)->getEditableAttributes($product) as $attribute) {
+
             if ($this->_isAllowedAttribute($attribute)
                 && isset($productData[$attribute->getAttributeCode()])) {
                 $product->setData(
@@ -211,7 +216,9 @@ class Openlabs_OpenERPConnector_Model_Olcatalog_Products extends Mage_Catalog_Mo
             $product->setWebsiteIds($productData['website_ids']);
         }
 
+
         foreach ($product->getTypeInstance(true)->getEditableAttributes($product) as $attribute) {
+            //$attribute = Mage::getModel('eav/entity_attribute')->load( $your_attribute_id );
             if ($this->_isAllowedAttribute($attribute)
                 && isset($productData[$attribute->getAttributeCode()])) {
                 $product->setData(
@@ -230,13 +237,11 @@ class Openlabs_OpenERPConnector_Model_Olcatalog_Products extends Mage_Catalog_Mo
         } catch (Mage_Core_Exception $e) {
             $this->_fault('data_invalid', $e->getMessage());
         }
-
         try {
             $product->save();
         } catch (Mage_Core_Exception $e) {
             $this->_fault('data_invalid', $e->getMessage());
         }
-
         return true;
     }
 
