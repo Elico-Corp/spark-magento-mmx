@@ -26,7 +26,6 @@
     <ul id="queldoreiNav">
 	    <?php if (Mage::getStoreConfig('shoppersettings/navigation/home')): ?>
          <?php $_anyActive = false; foreach ($this->getStoreCategories() as $_category) { $_anyActive = $_anyActive || $this->isCategoryActive($_category); }
-         $_menu = preg_replace('/\<span\>([a-z0-9]+) ([a-z0-9]+)\<\/span\>/i', '<span>$1 &nbsp;$2</span>', str_replace('our-range.html', 'search', $_menu));
          if (strpos(Mage::helper('core/url')->getCurrentUrl(),'search') != false ) {
             $_anyActive = true;
         ?>

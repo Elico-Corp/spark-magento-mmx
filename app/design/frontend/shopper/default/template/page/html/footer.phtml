@@ -57,7 +57,7 @@ try {
                 </div>
             </div>
             <div class="grid_3 information">
-                <h4><?php echo $this->__('Professional');?></h4>
+                <h4><?php echo $this->__('Trade');?></h4>
                 <div class="block-content clearfix">
                    <ul>
                        <li>
@@ -86,7 +86,11 @@ try {
                     ->setStoreId( Mage::app()->getStore()->getId() )
                     ->load('shopper_footer_contact');
                 if($cms_block->getIsActive()) {
-                    echo $this->getLayout()->createBlock('cms/block')->setBlockId('shopper_footer_contact')->toHtml();
+                    if(Mage::getSingleton('customer/session')->isLoggedIn()):
+                        echo $this->getLayout()->createBlock('cms/block')->setBlockId('shopper_footer_contact')->toHtml();
+                    else:
+                        echo preg_replace('/([a-zA-Z0-9_.+-]+)@([a-zA-Z_-]+)\.([a-zA-Z0-9\.]{2,8})/i', '', $this->getLayout()->createBlock('cms/block')->setBlockId('shopper_footer_contact')->toHtml());
+                    endif;
                 }
                 ?>
             </div>
