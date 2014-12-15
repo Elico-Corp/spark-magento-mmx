@@ -198,13 +198,13 @@
             myCarousel.scroll(0);
         });
 
-        $('.mousetrap').live('click', function(){
+
+        function mousetrap_click() {
             var images = [];
             images.push($('#cloud_zoom').attr('href'));
             $('a.cloud-zoom-gallery').each(function(){
                 images.push($(this).attr('href'));
             });
-
             $.fancybox(
                 images,
                 {
@@ -216,8 +216,28 @@
                 }
             );
             return false;
-        });
+        }
 
+        if(jQuery('.cloud-zoom-gallery').length > 1) {
+            $('.mousetrap').live('click', mousetrap_click);
+        } else {
+            $('.more-views').hide()
+        }
+
+        jQuery('.cloud-zoom').each(function() {
+            self = jQuery(this);
+            var url = self.attr('href');
+            var img = new Image();
+            console.log(url);
+            img.src = url;
+            jQuery(img).load(function() {
+                if(img.width < 652) { 
+                    jQuery('.product-image').on('mouseover', function() {
+                        jQuery('.cloud-zoom-big').hide();
+                    });
+                }
+            });
+        });
     });
 </script>
 <?php endif; ?>

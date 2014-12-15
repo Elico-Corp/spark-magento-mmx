@@ -88,3 +88,7 @@ h1, h2, h3, h4, .level0 a span {
 #category-img {
     display:none;
 }
+
+.cart-top-container {
+    display: none;
+}

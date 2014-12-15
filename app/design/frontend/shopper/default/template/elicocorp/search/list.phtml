@@ -37,7 +37,7 @@ $_productCollection = $this->getLoadedProductCollection();
 $_helper = $this->helper('catalog/output');
 $helper = $this->helper('shoppersettings/image');
 
-$listX = 252;
+$listX = 270;
 $listY = $helper->calculateHeight($listX);
 ?>
 
@@ -62,7 +62,20 @@ $pager->setShowPerPage(false);
 ?>
 <?php echo $toolbar->_toHtml();?>
 <?php echo $pager->_toHtml();?>
-
+<pre>
+<?php
+$get = '';
+$i = 0;
+foreach($_POST as $k => $v) {
+    $i++;
+    if($i==1) {
+        $get .= "?$k=$v";
+    } else {
+        $get .= "&$k=$v";
+    }
+}
+?>
+</pre>
 <div class="category-products">
     <?php // List mode ?>
     <?php if($this->getMode()!='grid'): ?>
@@ -75,7 +88,7 @@ $pager->setShowPerPage(false);
                 <?php if (Mage::getStoreConfig('shoppersettings/ajax/cart')) : //quick view button ?>
                 <a href='<?php echo $this->getUrl('ajax/index/options',array('product_id'=>$_product->getId()));?>' data-fancybox-group="gallery" class='fancybox quick-view' id='fancybox<?php echo $_product->getId()?>'><?php echo $this->__('quick view')?></a>
                 <?php endif; ?>
-                <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image">
+                <a href="<?php echo $_product->getProductUrl() . $get ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image">
                     <?php echo $this->helper('shoppersettings')->getLabel($_product);  ?>
                     <?php
                     $_product->load('media_gallery');
@@ -91,7 +104,7 @@ $pager->setShowPerPage(false);
             <div class="product-shop">
                 <div class="f-fix">
                     <?php $_productNameStripped = $this->stripTags($_product->getName(), null, true); ?>
-                    <h2 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_productNameStripped; ?>"><strong><?php echo $_product->getSku(); ?></strong><br /> <?php  echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?></a></h2>
+                    <h2 class="product-name"><a href="<?php echo $_product->getProductUrl() . $get ?>" title="<?php echo $_productNameStripped; ?>"><strong><?php echo $_product->getSku(); ?></strong><br /> <?php  echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?></a></h2>
                     <?php if($this->helper('customer')->isLoggedIn()): ?>
                     <div class="price-container clearfix">
                     <?php echo $this->getPriceHtml($_product, true) ?>
@@ -161,7 +174,7 @@ $pager->setShowPerPage(false);
     } else {
         $grid_class = 'two_columns_' . Mage::getStoreConfig('shoppersettings/catalog/grid_columns_1col');
     }
-    $imgX = 252;
+    $imgX = 270;
     $imgY = $helper->calculateHeight($imgX);
     ?>
     <ul class="products-grid <?php echo $grid_class; ?>">
@@ -169,7 +182,7 @@ $pager->setShowPerPage(false);
         <li class="item">
 
             <div class="regular">
-                <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>" class="product-image">
+                <a href="<?php echo $_product->getProductUrl() . $get ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>" class="product-image">
                     <?php echo $this->helper('shoppersettings')->getLabel($_product);  ?>
                     <img src="<?php echo $_product->getCustomImageUrl(); ?>"  width="<?php echo $imgX; ?>" height="<?php echo $imgY; ?>" alt="<?php echo $this->htmlEscape($_product->getName()) ?>" />
                 </a>
@@ -188,16 +201,20 @@ $pager->setShowPerPage(false);
                         <?php endif; ?>
                     </div>
                     <?php $_productNameStripped = $this->stripTags($_product->getName(), null, true); ?>
-                    <a class="product-name" href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_productNameStripped; ?>"><strong><?php echo $_product->getSku(); ?></strong><br /> <?php  echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?></a>
+                    <a class="product-name" href="<?php echo $_product->getProductUrl() . $get ?>" title="<?php echo $_productNameStripped; ?>"><strong><?php echo $_product->getSku(); ?></strong><br /> <?php  echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?></a>
                     <?php if($this->helper('customer')->isLoggedIn()) echo $this->getPriceHtml($_product, true) ?>
                 </div>
             </div>
-
+            <?php if(Mage::getSingleton('customer/session')->isLoggedIn()):?>
             <div class="hover">
+            <?php else: ?>
+            <div class="hover transparent" onclick="Javascript:window.location = '<?php echo $_product->getProductUrl(); ?>'">
+            <?php endif; ?>
+                <?php if(Mage::getSingleton('customer/session')->isLoggedIn()):?>
                 <?php if (Mage::getStoreConfig('shoppersettings/ajax/cart')) : //quick view button ?>
                     <a href='<?php echo $this->getUrl('ajax/index/options',array('product_id'=>$_product->getId()));?>' data-fancybox-group="gallery" class='fancybox quick-view' id='fancybox<?php echo $_product->getId()?>'><?php echo $this->__('quick view')?></a>
                 <?php endif; ?>
-                <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>" class="product-image">
+                <a href="<?php echo $_product->getProductUrl() . $get ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>" class="product-image">
                     <?php echo $this->helper('shoppersettings')->getLabel($_product);  ?>
                     <?php
                     $_product->load('media_gallery');
@@ -208,14 +225,12 @@ $pager->setShowPerPage(false);
                         <img src="<?php echo $_product->getCustomImageUrl(); ?>" data-srcX2="<?php echo $_product->getCustomImageUrl(true); ?>" width="<?php echo $imgX; ?>" height="<?php echo $imgY; ?>" alt="<?php echo $this->htmlEscape($_product->getName()) ?>" />
                     <?php endif; ?>
                 </a>
-                <?php if(Mage::getSingleton('customer/session')->isLoggedIn()):?>
 
-                    <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>">
+                    <a href="<?php echo $_product->getProductUrl() . $get ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>">
                         <?php echo $this->helper('shoppersettings/data')->priceFormat( $this->getPriceHtml($_product, true) ); ?>
                     </a>
-                <?php endif;?>
                 <?php $_productNameStripped = $this->stripTags($_product->getName(), null, true); ?>
-                <a class="product-name" href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_productNameStripped; ?>"><strong><?php echo $_product->getSku(); ?></strong><br /> <?php  echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?></a>
+                <a class="product-name" href="<?php echo $_product->getProductUrl() . $get ?>" title="<?php echo $_productNameStripped; ?>"><strong><?php echo $_product->getSku(); ?></strong><br /> <?php  echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?></a>
                 <?php if($_product->getRatingSummary()){ echo $this->getReviewsSummaryHtml($_product); } ?>
                 <div class="button-container">
                     <?php if($_product->isSaleable()): ?>
@@ -255,8 +270,8 @@ $pager->setShowPerPage(false);
                     <?php endif; ?>
                 </ul>
 
+            <?php endif;?>
             </div>
-
         </li>
         <?php endforeach ?>
     </ul>

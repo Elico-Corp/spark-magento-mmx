@@ -27,7 +27,7 @@
 $num_upsell =  Mage::getStoreConfig('shoppersettings/labels/number_upsell');
 if ( !is_numeric($num_upsell) || $num_upsell < 1 ) $num_upsell = 6;
 $helper = $this->helper('shoppersettings/image');
-$imgX = 252;
+$imgX = 270;
 $imgY = $helper->calculateHeight($imgX);
 ?>
 <?php if(count($this->getItemCollection()->getItems())): ?>

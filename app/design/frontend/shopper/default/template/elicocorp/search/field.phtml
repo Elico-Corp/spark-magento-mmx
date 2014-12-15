@@ -26,6 +26,12 @@ endif;
                         echo $attribute->getFrontendLabel().'s';
                     }
                 ?> --</option>
+                <?php 
+                    $old_value = '';
+                    if(isset($_GET[$this->field_name])) {
+                        $old_value = $_GET[$this->field_name];
+                    }
+                ?>
                 <?php foreach($products as $product) {
                     $value = call_user_func(array($product, 'get'.$method_name));
                     if(in_array($value, $values)) {
@@ -35,7 +41,11 @@ endif;
                     if(empty($value))
                         continue;
                 ?>
-                <option value="<?php echo $value ?>"><?php echo $value ?></option>
+                <?php if($old_value == $value): ?>
+                    <option selected="selected" value="<?php echo $value ?>"><?php echo $value ?></option>
+                <?php else: ?>
+                    <option value="<?php echo $value ?>"><?php echo $value ?></option>
+                <?php endif; ?>
                 <?php } ?>
         </select>
 <?php

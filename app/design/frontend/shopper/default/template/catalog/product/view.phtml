@@ -142,11 +142,11 @@ echo '<div class="product-category-title">'.$_category->getName().'</div>';
                 <?php echo $this->getChildHtml('shopper_product_addthis') ?>
             </div>
             <?php 
-            $license_name = str_replace(' ', '-', strtolower($_product->getCustomManufacturer()));
-            $license_image_url = IMAGE_SERVER.'licenses-'.$license_name.'.png'; ?>
-            <div class="licenses-div">
-            <a href="/licensor-<?php echo $license_name; ?>">
-                <img src="<?php echo $license_image_url; ?>" alt="<?php echo $name; ?>" class="licenses-img" />
+            $partner_name = str_replace(' ', '-', strtolower($_product->getCustomManufacturer()));
+            $partner_image_url = IMAGE_SERVER.'partners-'.$partner_name.'.png'; ?>
+            <div class="partners-div">
+            <a href="/partner-<?php echo $partner_name; ?>">
+                <img src="<?php echo $partner_image_url; ?>" alt="<?php echo $name; ?>" class="partners-img" />
             </a>
             </div>
         </div>

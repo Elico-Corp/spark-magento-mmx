@@ -58,6 +58,10 @@ if (Mage::getStoreConfig('shoppersettings/header/top_custom_link')) {
                 <?php if($this->helper('customer')->isLoggedIn() && $_link->getIsFirst()): ?>
                     <?php echo $this->helper('customer')->getCustomerName() ?>
                 <?php endif; ?>
+                <?php if($_link->getLabel() == 'Checkout') {
+                    continue;
+                }
+                ?>
                 <?php echo $_link->getLabel() ?></a><?php echo $_link->getAfterText() ?></li>
 			<?php if(!$_link->getIsLast()): ?>
             <li class="separator">&nbsp;</li>

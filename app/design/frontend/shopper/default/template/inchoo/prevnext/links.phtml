@@ -31,14 +31,29 @@
 ?>
 <?php $_prev = $this->getPreviousProduct(); ?>
 <?php $_next = $this->getNextProduct(); ?>
-
+<?php
+$get = '';
+$i = 0;
+foreach($_GET as $k => $v) {
+    $i++;
+    if($i==1) {
+        $get .= "?$k=$v";
+    } else {
+        $get .= "&$k=$v";
+    }
+}
+?>
 <?php if($_prev || $_next): ?>
 <div class="prev-next clearfix">
-    <?php if($_next): ?>
-    <a rel="next" class="product-next" title="<?php echo $this->escapeHtml($_next->getName()); ?>" href="<?php echo $_next->getUrlPath(); ?>"><span><?php echo $this->__('next') ?></span></a>
-    <?php endif; ?>
-    <?php if($_prev): ?>
-    <a rel="prev" class="product-prev" title="<?php echo $this->escapeHtml($_prev->getName()); ?>" href="<?php echo $_prev->getUrlPath(); ?>"><span><?php echo $this->__('prev') ?></span></a>
+    <?php if(count($_GET) > 0): ?>
+        <a rel="next" class="product-next" href="/search<?php echo $get; ?>"><span><?php echo $this->__('Back') ?></span></a>
+    <?php else: ?>
+        <?php if($_next): ?>
+        <a rel="next" class="product-next" title="<?php echo $this->escapeHtml($_next->getName()); ?>" href="<?php echo $_next->getUrlPath(); ?>"><span><?php echo $this->__('next') ?></span></a>
+        <?php endif; ?>
+        <?php if($_prev): ?>
+        <a rel="prev" class="product-prev" title="<?php echo $this->escapeHtml($_prev->getName()); ?>" href="<?php echo $_prev->getUrlPath(); ?>"><span><?php echo $this->__('prev') ?></span></a>
+        <?php endif; ?>
     <?php endif; ?>
 </div>
 <?php endif; ?>

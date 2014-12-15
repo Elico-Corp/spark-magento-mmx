@@ -36,7 +36,7 @@ $_productCollection=$this->getLoadedProductCollection();
 $_helper = $this->helper('catalog/output');
 $helper = $this->helper('shoppersettings/image');
 
-$listX = 252;
+$listX = 270;
 $listY = $helper->calculateHeight($listX);
 ?>
 <?php if(!$_productCollection->count()): ?>
@@ -128,7 +128,7 @@ $listY = $helper->calculateHeight($listX);
     <?php
     $_collectionSize = $_productCollection->count();
     $grid_class = 'two_columns_' . Mage::getStoreConfig('shoppersettings/catalog/grid_columns_2col');
-    $imgX = 252;
+    $imgX = 270;
     $imgY = $helper->calculateHeight($imgX);
     ?>
     <ul class="products-grid <?php echo $grid_class; ?>">
