@@ -47,7 +47,7 @@ error_reporting(E_ALL);
  */
 define('MAGENTO_ROOT', getcwd());
 define('IMAGE_SERVER', 'http://images.sparkmodel.com/');
-define('SEARCH_FIELDS', serialize(array('scale', 'custom_manufacturer', 'model', 'model_year', 'race_edition', 'race_edition_year', 'year', 'driver')));
+define('SEARCH_FIELDS', serialize(array('scale', 'custom_manufacturer', 'model', 'model_year', 'race_edition', 'race_edition_year', 'driver', 'year')));
 
 $compilerConfig = MAGENTO_ROOT . '/includes/config.php';
 if (file_exists($compilerConfig)) {

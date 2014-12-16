@@ -136,6 +136,8 @@
             <block type="cms/block" name="shopper_footer_links" as="shopper_footer_links">
                 <action method="setBlockId"><block_id>shopper_footer_links</block_id></action>
             </block>
+            <block type="shopperslideshow/slideshow" name="slideshow" as="slideshow"
+                   template="queldorei/slideshow.phtml"/>
         </reference>
 
     </default>
