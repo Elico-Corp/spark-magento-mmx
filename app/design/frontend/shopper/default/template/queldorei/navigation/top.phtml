@@ -40,7 +40,7 @@
         ?>
             <script type="text/javascript">
                 jQuery(document).ready(function () {
-                    jQuery('#queldoreiNav li').eq(-2).addClass('active');
+		    jQuery('#queldoreiNav li a[href="'+window.location.href.replace('_', '-')+'.html"]').parent('li').addClass('active');
                 });
             </script>
         <?php

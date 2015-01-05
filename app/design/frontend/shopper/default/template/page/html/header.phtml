@@ -114,4 +114,6 @@ if ( $config['design']['below_logo'] ) {
 </div>
 <!-- HEADER EOF -->
 <?php #echo $this->getChildHtml('slideshow'); ?>
-<div id="category-img" style="display: block;"><img src="http://mmx.trunk.sparkmodel.com/media/catalog/category/Image1.jpg" alt="Our Range" title="Our Range"></div>
+<?php if (strpos(Mage::helper('core/url')->getCurrentUrl(),'about_us') == false): ?>
+<div id="category-img" style="display: block;"><img src="/media/catalog/category/home.jpg" alt="Our Range" title="Our Range"></div>
+<?php endif; ?>
