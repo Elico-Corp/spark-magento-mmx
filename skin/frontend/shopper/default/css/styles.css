@@ -1551,3 +1551,5 @@ img.max-width { max-width: 100%; }
 .checkout-types, .btn-checkout {
     display:none;
 }
+
+#category-img img { width:100%; }

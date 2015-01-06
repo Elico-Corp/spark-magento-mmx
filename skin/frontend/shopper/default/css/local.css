@@ -265,7 +265,7 @@ p.required { font-size: 12px; text-align: left; }
 
 /*** CUSTOM STYLES ****/
 body.non-responsive {min-width:1200px;}
-.cms-index-index .col-main, .cms-page-view .col-main {float:none; width:auto; margin:0; padding:0 }
+.cms-index-index .col-main, .cms-page-view .col-main {float:none; width:auto; margin:10px 0 0 0; padding:0 }
 .contacts-index-index .buttons-set {margin-top:-35px;}
 .contacts-index-index .buttons-set p.required {float:left; margin:0 0 25px;}
 .contacts-index-index .buttons-set button.button {margin: -12px 0 0; clear:left; }

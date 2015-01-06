@@ -12,7 +12,15 @@ foreach($fields as $field) {
         if($field == $field2)
             continue;
         if(isset($_POST[$field2]) and !empty($_POST[$field2])) {
-            $products->addAttributeToFilter($field2, array('eq' => $_POST[$field2]));
+	    if(in_array($field2, unserialize(SEARCH_FIELDS_MULTIPLE)) == True) {
+		$products->addAttributeToFilter(array(array('attribute' => $field2, 'eq' => $_POST[$field2]),
+                                array('attribute' => $field2, 'like' => '%,'.$_POST[$field2].'%'),
+                                array('attribute' => $field2, 'like' => '%'.$_POST[$field2].',%')));
+            } elseif(strpos($field2 ,'x_') == True) {
+                $products->addAttributeToFilter($field2, (int) $_POST[$field2]);
+	    } else {
+                $products->addAttributeToFilter($field2, array('eq' => $_POST[$field2]));
+            }
         }
     }
 
@@ -22,17 +30,45 @@ foreach($fields as $field) {
     $attribute = $products->getResource()->getAttribute($field);
     $values = array();
     $res[$field]['default'] = '-- '. $this->__('All') .' '. $attribute->getFrontendLabel().'s --';
-    if($field == 'driver') {
+    if($field == 'x_mmx_driver') {
         $res[$field]['default'] = '-- '. $this->__('All').' Drivers --';
+    
     }
+    $attribute_model = Mage::getModel('eav/entity_attribute');
     foreach($products as $product) {
-        $value = str_replace('"', '', call_user_func(array($product, 'get'.$method_name)));
-        if(empty($value))
-            continue;
-        if(in_array($value, $values)) {
-            continue;
+        if(in_array($field, unserialize(SEARCH_FIELDS_MULTIPLE))) {
+  
+            $source = Mage::getModel('catalog/product')->getResource()->getAttribute($field)->getSource();
+            #if(empty($value))
+            #    continue;
+            $value = str_replace('"', '', call_user_func(array($product, 'get'.$method_name)));
+            $mvalues = explode(',', $value);
+            $i = 0;
+            if(count($mvalues) > 1) {
+               foreach($mvalues as $v) { 
+                if(!empty($v) and $product->getAttributeText($field)[$i] != null) {
+                    $values[$v] = $product->getAttributeText($field)[$i];
+                }
+                $i++;
+              }
+            } else {
+		if(!empty($value))
+                    $values[$value] = $product->getAttributeText($field);
+            }
         }
-        $values[$value] = $value;
+        else {
+	    $value = $product->getAttributeText($field);
+	    $key = str_replace('"', '', call_user_func(array($product, 'get'.$method_name)));
+	    if(empty($value))
+                $value = $key;
+            if(empty($key))
+                continue;
+            if(in_array($key, $values)) {
+                continue;
+            }
+          
+            $values[$key] = $value;
+       }
     }
     asort($values);
     $res[$field] +=  $values;

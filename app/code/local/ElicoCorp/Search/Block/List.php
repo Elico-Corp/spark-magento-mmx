@@ -66,9 +66,18 @@ class ElicoCorp_Search_Block_List extends Mage_Catalog_Block_Product_List
 
         }
         $fields = unserialize(SEARCH_FIELDS);
+        $multiple_fields = unserialize(SEARCH_FIELDS_MULTIPLE);
         foreach($fields as $field) {
-            if(isset($_POST[$field]) and !empty($_POST[$field]))
-                $this->_productCollection->addAttributeToFilter($field, array('eq' => $_POST[$field]));
+            if(isset($_POST[$field]) and !empty($_POST[$field])) {
+                if(in_array($field, $multiple_fields) == True) {
+                	$this->_productCollection->addAttributeToFilter(array(array('attribute' => $field, 'eq' => $_POST[$field]),
+				array('attribute' => $field, 'like' => '%,'.$_POST[$field].'%'),
+				array('attribute' => $field, 'like' => '%'.$_POST[$field].',%')));
+		}
+		else {
+                	$this->_productCollection->addAttributeToFilter($field, array('eq' => $_POST[$field]));
+		}
+	    }
         }
         return $this->_productCollection;
     }

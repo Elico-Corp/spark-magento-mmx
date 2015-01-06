@@ -9,17 +9,17 @@ $products->addAttributeToSelect($this->field_name)
          ->load();
 $attribute = $products->getResource()->getAttribute($this->field_name);
 $values = array();
-if($this->field_name != 'model' and $this->field_name != 'model_year' and $this->field_name != 'race_edition_year'):
+if($this->field_name != 'x_mmx_model' and $this->field_name != 'model_year' and $this->field_name != 'race_edition_year'):
 ?>
 <div class="input-box" style="clear:both;float:left;">
     <label class="search_condition"><?php echo $attribute->getFrontendLabel();?></label>
 <?php
 endif;
 ?>
-        <select class="ajax_field" name="<?php echo $this->field_name; ?>" id="<?php echo $this->field_name; ?>" >
+        <select class="ajax_field" name="<?php echo $this->field_name; ?>" id="<?php echo $this->field_name; ?>" <?php echo $multiple; ?>>
                 <option value="">-- <?php echo $this->__('All'); ?>
                 <?php 
-                    if($this->field_name == 'driver') {
+                    if($this->field_name == 'x_mmx_driver') {
                         echo $this->__('Drivers');
                     }
                     else {
@@ -55,7 +55,7 @@ endif;
             ?>
         </select>
 <?php
-if($this->field_name != 'custom_manufacturer' and $this->field_name != 'model' and $this->field_name != 'race_edition'):
+if($this->field_name != 'custom_manufacturer' and $this->field_name != 'x_mmx_model' and $this->field_name != 'race_edition'):
 ?>
 </div>
 <?php endif; ?>

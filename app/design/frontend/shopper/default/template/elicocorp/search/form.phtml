@@ -88,8 +88,9 @@
                                 }
                                 options = '<option value="">'+data[field_name]['default']+'</option>';
                                 jQuery.each(data[field_name], function(key, value){
-                                    if(key == "default")
+                                    if(key == "default") {
                                         return true;
+				    }
                                     options += '<option value="'+key+'">'+value+'</option>';
                                 });
                                 jQuery('#'+ field_name).html(options);
