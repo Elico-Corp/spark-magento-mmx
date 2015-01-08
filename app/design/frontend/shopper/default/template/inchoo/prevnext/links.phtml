@@ -43,7 +43,7 @@ foreach($_GET as $k => $v) {
     }
 }
 ?>
-<?php if($_prev || $_next): ?>
+<?php if($_prev || $_next || $get != ''): ?>
 <div class="prev-next clearfix">
     <?php if(count($_GET) > 0): ?>
         <a rel="next" class="product-next" href="/search<?php echo $get; ?>"><span><?php echo $this->__('Back') ?></span></a>

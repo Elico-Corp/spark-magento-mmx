@@ -79,7 +79,7 @@
                             form_data += jQuery(this).attr('name') + '=' + jQuery(this).val().replace(/ /g, '+');
                         });
                         jQuery.post('<?php echo Mage::getUrl('search/index/options'); ?>', form_data, function(json) { 
-                            data = jQuery.parseJSON(json);   
+                            data = jQuery.parseJSON(json);
                             jQuery('.ajax_field').each(function(){ 
                                 var field_name = jQuery(this).attr('name');
                                 val = jQuery('#'+ field_name).val();
@@ -103,6 +103,7 @@
 			         	hide_empty_fields();
 			        }
                             jQuery('#sub_button').click();
+
                         })
                     }
 
@@ -190,6 +191,21 @@
 
                         jQuery.post('<?php echo Mage::getUrl('search/index/list'); ?>', data, function(data) {
                             jQuery('#result').html(data);
+			    var driver = jQuery('#x_mmx_driver');
+			    var driver_option = driver.children('option[value!=""]');
+			    driver_option.sort(function(a,b){
+					var an = jQuery(a).text().substring(3).toLowerCase();
+				        var bn = jQuery(b).text().substring(3).toLowerCase();
+
+					if(an > bn) {
+						return 1;
+					}
+					if(an < bn) {
+						return -1;
+					}
+					return 0;
+				});
+			    driver_option.detach().appendTo(driver);
                             jQuery('#overlay').hide();
                         })
                     });

@@ -1,5 +1,6 @@
 <?php
 $res = array();
+$pdt_ids = array();
 $fields = unserialize(SEARCH_FIELDS);
 foreach($fields as $field) {
     $products = Mage::getModel('catalog/product')->getCollection()
@@ -30,17 +31,13 @@ foreach($fields as $field) {
     $attribute = $products->getResource()->getAttribute($field);
     $values = array();
     $res[$field]['default'] = '-- '. $this->__('All') .' '. $attribute->getFrontendLabel().'s --';
-    if($field == 'x_mmx_driver') {
-        $res[$field]['default'] = '-- '. $this->__('All').' Drivers --';
-    
-    }
     $attribute_model = Mage::getModel('eav/entity_attribute');
+    $pdt_ids = array();
     foreach($products as $product) {
+	$pdt_ids[] = $product->getId();
         if(in_array($field, unserialize(SEARCH_FIELDS_MULTIPLE))) {
   
             $source = Mage::getModel('catalog/product')->getResource()->getAttribute($field)->getSource();
-            #if(empty($value))
-            #    continue;
             $value = str_replace('"', '', call_user_func(array($product, 'get'.$method_name)));
             $mvalues = explode(',', $value);
             $i = 0;
@@ -57,10 +54,11 @@ foreach($fields as $field) {
             }
         }
         else {
-	    $value = $product->getAttributeText($field);
+            $value = $product->getAttributeText($field);
 	    $key = str_replace('"', '', call_user_func(array($product, 'get'.$method_name)));
-	    if(empty($value))
+	    if(empty($value)) {
                 $value = $key;
+            }
             if(empty($key))
                 continue;
             if(in_array($key, $values)) {
@@ -73,5 +71,6 @@ foreach($fields as $field) {
     asort($values);
     $res[$field] +=  $values;
 }
+$_SESSION['temp_product_collection'] = $pdt_ids;
 echo json_encode($res);
 ?>

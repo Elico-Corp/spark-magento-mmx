@@ -17,14 +17,7 @@ if($this->field_name != 'x_mmx_model' and $this->field_name != 'model_year' and 
 endif;
 ?>
         <select class="ajax_field" name="<?php echo $this->field_name; ?>" id="<?php echo $this->field_name; ?>" <?php echo $multiple; ?>>
-                <option value="">-- <?php echo $this->__('All'); ?>
-                <?php 
-                    if($this->field_name == 'x_mmx_driver') {
-                        echo $this->__('Drivers');
-                    }
-                    else {
-                        echo $attribute->getFrontendLabel().'s';
-                    }
+                <option value="">-- <?php echo $this->__('All'), ' ', $attribute->getFrontendLabel().'s';
                 ?> --</option>
                 <?php 
                     $old_value = '';
@@ -32,25 +25,9 @@ endif;
                         $old_value = html_entity_decode($_GET[$this->field_name]);
                     }
                 ?>
-                <?php foreach($products as $product):
-                    $value = call_user_func(array($product, 'get'.$method_name));
-                    if(in_array($value, $values)) {
-                        continue;
-                    }
-                    if(empty($value))
-                        continue;
-                    $values[] = $value;
-                    $selected = '';
-                    if($value == $old_value) {
-                        $selected = 'selected="selected"';
-                        $old_value = '';
-                    }
-                ?>
-                <option  <?php echo $selected; ?> value="<?php echo $value ?>"><?php echo $value; ?></option>
-            <?php endforeach ?>
             <?php
             if($old_value != '') { ?>
-                <option  selected="selected" value="<?php echo $old_value ?>"><?php echo $old_value; ?></option>              
+                <option  selected="selected" value="<?php echo $old_value ?>">-- <?php echo $this->__('All'), ' ', $attribute->getFrontendLabel().'s'; ?> --</option>              
             <?php }
             ?>
         </select>
