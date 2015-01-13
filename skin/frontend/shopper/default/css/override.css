@@ -92,3 +92,7 @@ h1, h2, h3, h4, .level0 a span {
 .cart-top-container {
     display: none;
 }
+
+#wishlist-no-product {
+    display: none;
+}

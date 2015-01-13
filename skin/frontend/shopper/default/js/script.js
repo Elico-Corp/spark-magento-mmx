@@ -777,3 +777,25 @@ function getTweets(el, utils){
         });
     }
 }
+
+jQuery(document).ready(function () {
+	jQuery('#wishlist-product-filter').on('keyup', function() {
+	    jQuery('#wishlist-table tr.pdt-line').show()
+            jQuery('#wishlist-table th').show();
+            jQuery('#wishlist-no-product').hide();
+	    var val = jQuery(this).val().toLowerCase();
+	    if(val != "") {
+		jQuery('#wishlist-table tr.pdt-line:not([data-sku*="'+val+'"])').hide();
+                for(var i=0; i < jQuery('#wishlist-table tbody th').length; i++) {
+                    var item = jQuery('#wishlist-table tbody th').eq(i);
+                    if (jQuery('#wishlist-table tr.pdt-line[data-status="'+jQuery(item).data('status')+'"]:visible').length == 0) {
+                         jQuery(item).hide();
+                    }
+		 }
+	    }
+	    if(jQuery('#wishlist-table tr.pdt-line:visible').length == 0) {
+	        jQuery('#wishlist-no-product').show();
+            }
+	    jQuery('#nb-displayed-products').text(jQuery('#wishlist-table tr.pdt-line:visible').size());
+	});
+});
