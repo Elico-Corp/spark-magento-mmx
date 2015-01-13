@@ -48,6 +48,7 @@
             <action method="addJs"><script>queldorei/jquery.flexslider-min.js</script></action>
             <action method="addJs"><script>queldorei/jquery.jcarousel.min.js</script></action>
             <action method="addJs"><script>queldorei/jquery.hoverIntent.min.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>js/jquery.cookie.js</script></action>
             <action method="addItem"><type>skin_js</type><script>js/script.js</script></action>
         </reference>
 

@@ -798,4 +798,13 @@ jQuery(document).ready(function () {
             }
 	    jQuery('#nb-displayed-products').text(jQuery('#wishlist-table tr.pdt-line:visible').size());
 	});
+
+       if(jQuery.cookie('accepted_cookies') === undefined) {
+         jQuery('.cookie-container').show();
+       }
+
+       jQuery('.cookie-close').on('click', function(){
+         jQuery('.cookie-container').hide();
+         jQuery.cookie('accepted_cookies', true);
+       });
 });

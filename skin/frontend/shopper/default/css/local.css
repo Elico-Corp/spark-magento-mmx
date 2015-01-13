@@ -2021,3 +2021,33 @@ html[xmlns] .slides {display: block;}
 .level0-parent > a {
   display:none;
 }
+
+.cookie-container {
+	background: none repeat scroll 0 0 rgba(0,0,0,0.7);
+	width: 100%;
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	z-index: 9999;
+	padding: 10px 0px;
+        display: none;
+}
+
+.cookie-text {
+	font-size: 12px;
+	line-height: 16px;
+	color: #fff;
+	text-align: left;
+	margin: 0 10px;
+}
+
+.cookie-close {
+	cursor: pointer;
+	font-size: 20px;
+	float: right;
+	text-decoration: none;
+	color: #da251d;
+	margin-right: 15px;
+}
+
+.cookie-close:hover { text-decoration:none; }
