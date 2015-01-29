@@ -13,11 +13,15 @@ foreach($fields as $field) {
         if($field == $field2)
             continue;
         if(isset($_POST[$field2]) and !empty($_POST[$field2])) {
+	    // if many2many field
 	    if(in_array($field2, unserialize(SEARCH_FIELDS_MULTIPLE)) == True) {
 		$products->addAttributeToFilter(array(array('attribute' => $field2, 'eq' => $_POST[$field2]),
-                                array('attribute' => $field2, 'like' => '%,'.$_POST[$field2].'%'),
-                                array('attribute' => $field2, 'like' => '%'.$_POST[$field2].',%')));
-            } elseif(strpos($field2 ,'x_') == True) {
+                                array('attribute' => $field2, 'like' => '%,'.$_POST[$field2]),
+                                array('attribute' => $field2, 'like' => $_POST[$field2].',%'),
+				array('attribute' => $field2, 'like' => '%,'.$_POST[$field2].',%'));
+            } 
+	    // if many2one
+	    elseif(strpos($field2 ,'x_') == True) {
                 $products->addAttributeToFilter($field2, (int) $_POST[$field2]);
 	    } else {
                 $products->addAttributeToFilter($field2, array('eq' => $_POST[$field2]));
