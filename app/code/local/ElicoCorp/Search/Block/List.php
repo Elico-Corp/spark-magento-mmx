@@ -65,10 +65,6 @@ class ElicoCorp_Search_Block_List extends Mage_Catalog_Block_Product_List
 
 
         }
-	if(isset($_SESSION['temp_product_collection'])) {
- 		$this->_productCollection->addAttributeToFilter('entity_id', array('in' => $_SESSION['temp_product_collection']));
-     		return $this->_productCollection;
-	}
 	$fields = unserialize(SEARCH_FIELDS);
         $multiple_fields = unserialize(SEARCH_FIELDS_MULTIPLE);
         foreach($fields as $field) {
