@@ -42,7 +42,7 @@ if(count($this->getGroups())>1): ?>
     <select id="select-store" title="<?php echo $this->__('Select Store') ?>" onchange="location.href=this.value">
     <?php /*foreach ($this->getStores() as $_store): ?>
         <option value="<?php echo $_store->getUrl('') ?>"<?php if($_store->getId()==$this->getCurrentStoreId()): ?> selected="selected"<?php endif; ?>><?php echo $_store->getName() ?></option>
-    <?php endforeach;*/ ?>
+    <?php endforeach;*/  ?>
     <?php foreach ($this->getGroups() as $_group): ?>
         <?php $_selected = ($_group->getId()==$this->getCurrentGroupId()) ? ' selected="selected"' : '' ?>
         <option value="<?php echo $_group->getHomeUrl() ?>"<?php echo $_selected ?>><?php echo $this->htmlEscape($_group->getName()) ?></option>
@@ -81,3 +81,35 @@ foreach ($this->getStores() as $_lang) {
 </div>
 <?php endif; ?>
 <!-- LANGUAGES EOF -->
+<div class="switch-locale">
+    Shipping to: <img src="/skin/frontend/shopper/default/images/flags/de_DE.png" />
+</div>
+<div class="dialog-bg"></div>
+<div class="dialog-main test-dialog-main dialog-country-selector"><a class="dialog-close" href="#">close</a><h2 class="dialog-header">Country Selector</h2>        <div class="dialog-body">
+    <div id="modalContainer" class="country-selector test-modal-country-selector">
+        <form name="changeLocationForm" action="/" class="country-picker" method="GET"><input name="_dyncharset" value="UTF-8" type="hidden"><input name="_dynSessConf" value="4836029487250462156" type="hidden">
+            <input id="selectedLocale" name="/e2x/roadrunner/locale/CountryLanguageFormHandler.selectedLocale" value="en-us-gw" type="hidden"><input name="_D:/e2x/roadrunner/locale/CountryLanguageFormHandler.selectedLocale" value=" " type="hidden">
+            <span id="us" class="delivering-to DE-flag"></span>
+            <div class="lost-cart-warning test-change-country-warning-message">
+                <h3>Change country</h3>
+                <p>By changing your delivery country you will lose everything in your Cart and any Gift Lists created during this visit.</p>
+            </div>
+           
+            <ul class="locale-list">
+                <li>
+                    <a href="/" class="DE-flag">Germany - German</a>
+                </li>
+            </ul>
+            <ul class="locale-list">
+                <li>
+                    <a href="http://mix.sparkmodel.com" class="FR-flag">France - French</a>
+                </li>
+            </ul>
+            <ul class="locale-list">
+                <li>
+                    <a href="#" class="JP-flag">Japan - English</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

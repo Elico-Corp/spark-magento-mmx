@@ -807,4 +807,15 @@ jQuery(document).ready(function () {
          jQuery('.cookie-container').hide();
          jQuery.cookie('accepted_cookies', true);
        });
+
+       jQuery('.switch-locale').on('click', function(){
+        jQuery('.dialog-bg').show();
+        jQuery('.dialog-main').show();
+       });
+
+       jQuery('.dialog-close').on('click', function() {
+         jQuery('.dialog-bg').hide();
+         jQuery('.dialog-main').hide();
+       });
+
 });

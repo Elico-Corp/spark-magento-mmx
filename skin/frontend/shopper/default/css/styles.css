@@ -1053,7 +1053,7 @@ tr.summary-details-excluded { font-style:italic; }
 
 /* Account Login/Create Pages ============================================================ */
 .account-login {}
-.account-login .new-users {display: none;}
+/*.account-login .new-users {display: none;}*/
 .account-login .registered-users {}
 
 .account-create {}
