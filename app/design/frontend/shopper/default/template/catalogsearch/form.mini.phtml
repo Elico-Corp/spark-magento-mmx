@@ -35,8 +35,22 @@ if (isset($config['design']['search_field']) && $config['design']['search_field'
             <div class="form-search">
                 <span>Search</span>
                 <input id="search" type="text" name="<?php echo $this->helper('catalogsearch')->getQueryParamName() ?>"
-                       value="<?php echo $this->helper('catalogsearch')->getEscapedQueryText() ?>" class="input-text"/>
-                <button type="submit" title="<?php echo $this->__('Search') ?>"></button>
+                       value="<?php echo $this->helper('catalogsearch')->getEscapedQueryText() ?>" class="input-text" placeholder="<?php echo $this->__('Type and hit enter') ?>" />
+                <button type="submit" class="hidden" title="<?php echo $this->__('Search') ?>"></button>
+                <div class="search-info">
+                    <p>
+                        To search for any particular model, type the name of the model surrounded by quotation marks.
+                    </p>
+                    <p class="search-p-list">
+                        <strong>ex:</strong> "Porsche 991"
+                    </p>
+                    <p>
+                        To search for multiple items, type each word or name.<br />
+                    </p>
+                    <p class="search-p-list">
+                        <strong>ex:</strong> Porsche BMW
+                    </p>
+                </div>
             </div>
             <div id="search_autocomplete" class="search-autocomplete"></div>
             <script type="text/javascript">

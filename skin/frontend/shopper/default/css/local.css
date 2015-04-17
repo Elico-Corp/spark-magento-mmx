@@ -2161,6 +2161,10 @@ ul.locale-list li a {
   display: block;
 }
 
+.locale-list li a {
+  width: 100%;
+}
+
 .switch-locale {
   text-align: right;
   cursor: pointer;
@@ -2176,4 +2180,19 @@ ul.locale-list li a {
 
 .DE-flag {
   background-position: -224px -62px;
+}
+
+.WORLD-flag {
+  background-position: 0px -122px;
+}
+
+.search-info {
+  text-align: justify;
+  padding: 15px;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.search-p-list {
+  padding: 10px;
 }
