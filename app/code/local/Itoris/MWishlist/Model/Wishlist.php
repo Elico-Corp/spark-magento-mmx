@@ -51,6 +51,8 @@ class Itoris_MWishlist_Model_Wishlist extends Itoris_MWishlist_Model_Mwishlistna
 	 * @throws Exception
 	 */
 	public function createWishlist($name, $editable = Itoris_MWishlist_Model_Mwishlistnames::WISHLIST_EDITABLE, $customerId = null) {
+		# prevent wishlist creation
+		return;
 		$existsWishlistId = $this->isWishlistNameExists($name);
 		if ($existsWishlistId) {
 			return $existsWishlistId;

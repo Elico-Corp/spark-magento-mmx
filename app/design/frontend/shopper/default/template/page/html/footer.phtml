@@ -30,7 +30,7 @@ $route = Mage::app()->getFrontController()->getRequest()->getRouteName();
 $action = Mage::app()->getFrontController()->getRequest()->getActionName();
 $in_china = false;
 try {
-    if(geoip_country_code3_by_name($_SERVER['REMOTE_ADDR']) == 'CHN') {
+ if(geoip_country_code3_by_name($_SERVER['REMOTE_ADDR']) == 'CHN') {
         $in_china = true;
     }
 } catch(Exception $e) {

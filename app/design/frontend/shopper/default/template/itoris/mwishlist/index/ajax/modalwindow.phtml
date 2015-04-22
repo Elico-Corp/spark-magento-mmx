@@ -38,19 +38,19 @@ $namescollection = $namesmodel->getnamecollection(null, true);
 			<div class="radio">
 				<input type="radio" class="radiobutton" name="radio" onclick="$('newinput').value=''"
 					   value="<?php echo $row['multiwishlist_id']?>" <?php if ($row['multiwishlist_is_main']) echo 'checked="checked"' ?>
-					   alt="<?php echo $this->__($row['multiwishlist_name']) ?>"> <?php echo $this->__($row['multiwishlist_name']) ?>
+					   alt="<?php echo $this->__($row['multiwishlist_name']) ?>">
+					<?php if ($row['multiwishlist_is_main']): ?>
+                    <label for="itoris-wishlist-radio-<?php echo $wishlist['multiwishlist_id'] ?>"><?php echo $this->__('Add to wishlist.'); ?></label>
+                    <?php else: ?>
+                    <label for="itoris-wishlist-radio-<?php echo $wishlist['multiwishlist_id'] ?>"><?php echo $this->__('Reserve it and purchase it once available.'); ?></label>
+                    <?php endif; ?>
 			</div>
 			<?php endforeach ?>
-		<div class="radio">
-			<input type="radio" class="radiobutton" name="radio"
-				   value="new"> <?php echo $this->__('or create a new wishlist:') ?>
-			<input type="text" onclick="checkRadio()" class="input" id="newinput" width="50%" name="newinput"/>
-		</div>
 	</div>
 	<div id="select">
-		<button type="button" id="btn-sel" title="<?php echo $this->__('Select') ?>" class="selectbutton"
+		<button type="button" id="btn-sel" title="<?php echo $this->__('Select') ?>" class="selectbutton button"
 				onclick="selectWishlist()"><span><span><?php echo $this->__('Select') ?></span></span></button>
-		<button type="button" title="<?php echo $this->__('Cancel') ?>" class="selectbutton"
+		<button type="button" title="<?php echo $this->__('Cancel') ?>" class="selectbutton button"
 				onclick="mwishlistCancelAdding()"><span><span><?php echo $this->__('Cancel') ?></span></span></button>
 	</div>
 </div>

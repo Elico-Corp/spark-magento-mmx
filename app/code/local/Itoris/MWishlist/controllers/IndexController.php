@@ -1029,6 +1029,8 @@ class Itoris_MWishlist_IndexController extends Mage_Wishlist_IndexController {
 	}
 
 	public function renameWishlistAction() {
+		// avoid renaming wihlist
+		return;
 		$result = array();
 		try {
 			$wishlistId = $this->getRequest()->getParam('id');

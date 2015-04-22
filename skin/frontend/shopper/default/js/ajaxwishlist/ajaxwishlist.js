@@ -49,23 +49,23 @@ jQuery(function ($) {
     function ajaxWishlist(url, id) {
         url = url.replace("wishlist/index", "ajaxwishlist/index");
         url += 'isAjax/1/';
-        $('#ajax_loading' + id).css('display', 'block');
-        $.ajax({
-            url:url,
-            dataType:'jsonp',
-            success:function (data) {
-                $('#ajax_loading' + id).css('display', 'none');
-                showMessage(data.message);
-                if (data.status != 'ERROR') {
-                    if ($('.block-wishlist').length) {
-                        $('.block-wishlist').replaceWith(data.sidebar);
-                        $('.col-left').masonry('reload');
-                    } else {
-                        $('.header-container .links').replaceWith(data.toplink);
-                    }
-                }
-            }
-        });
+        // $('#ajax_loading' + id).css('display', 'block');
+        // $.ajax({
+        //     url:url,
+        //     dataType:'jsonp',
+        //     success:function (data) {
+        //         $('#ajax_loading' + id).css('display', 'none');
+        //         showMessage(data.message);
+        //         if (data.status != 'ERROR') {
+        //             if ($('.block-wishlist').length) {
+        //                 $('.block-wishlist').replaceWith(data.sidebar);
+        //                 $('.col-left').masonry('reload');
+        //             } else {
+        //                 $('.header-container .links').replaceWith(data.toplink);
+        //             }
+        //         }
+        //     }
+        // });
     }
 
 });

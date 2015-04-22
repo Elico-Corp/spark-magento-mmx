@@ -72,6 +72,7 @@ class Itoris_MWishlist_Model_Mwishlistnames extends Varien_Object {
 		$tableName = $this->table;
 		$customerId = $customerId ? $customerId : (int)Mage::getSingleton('customer/session')->getCustomerId();
 		$this->checkMainWishlist($customerId);
+		$this->checkReservationWishlist($customerId);
 		$editable = $editableOnly ? 'and multiwishlist_editable = 1' : '';
 		$result = $this->db->fetchAll("SELECT *  FROM $tableName WHERE `multiwishlist_customer_id` = {$customerId} {$editable} order by multiwishlist_name");
 		return $result;
@@ -85,6 +86,17 @@ class Itoris_MWishlist_Model_Mwishlistnames extends Varien_Object {
 			$mainWishlist = $this->db->lastInsertId();
 		}
 		return $mainWishlist;
+	}
+
+
+	public function checkReservationWishlist($customerId) {
+		$reservationWishlist = $this->db->fetchOne("SELECT multiwishlist_id  FROM {$this->table} WHERE `multiwishlist_customer_id` = {$customerId}  and multiwishlist_is_main = 0");
+		if (empty($reservationWishlist)) {
+			$editable = Itoris_MWishlist_Model_Mwishlistnames::WISHLIST_EDITABLE;
+			$this->db->query("INSERT INTO {$this->table} (`multiwishlist_name`, `multiwishlist_customer_id`, `multiwishlist_editable`, `multiwishlist_is_main`) VALUES ('Reservation', $customerId, {$editable}, 0)");
+			$reservationWishlist = $this->db->lastInsertId();
+		}
+		return $reservationWishlist;
 	}
 
 	public function setName($name, $editable = Itoris_MWishlist_Model_Mwishlistnames::WISHLIST_EDITABLE, $customerId = null) {
@@ -330,14 +342,16 @@ class Itoris_MWishlist_Model_Mwishlistnames extends Varien_Object {
 	}
 
 	public function deleteWishlist($wishlistId) {
-		$tableName = $this->table;
-		$wishlistItemTable = $this->wishlistTable;
-		/**@var $db Varien_Db_Adapter_Pdo_Mysql*/
-		$db = Mage::getSingleton('core/resource')->getConnection('core_write');
-		$wishlistId = (int)$wishlistId;
-		$db->query("DELETE FROM $wishlistItemTable WHERE `wishlist_item_id` in (SELECT `item_id` FROM $this->itemsTable WHERE `multiwishlist_id` = $wishlistId)");
-		$db->query("DELETE FROM $tableName WHERE `multiwishlist_id` = $wishlistId");
-		Mage::dispatchEvent('itoris_wishlist_update', array('wishlist' => $this));
+		// prevent user from deleting a wishlist
+		return;
+		// $tableName = $this->table;
+		// $wishlistItemTable = $this->wishlistTable;
+		// /**@var $db Varien_Db_Adapter_Pdo_Mysql*/
+		// $db = Mage::getSingleton('core/resource')->getConnection('core_write');
+		// $wishlistId = (int)$wishlistId;
+		// $db->query("DELETE FROM $wishlistItemTable WHERE `wishlist_item_id` in (SELECT `item_id` FROM $this->itemsTable WHERE `multiwishlist_id` = $wishlistId)");
+		// $db->query("DELETE FROM $tableName WHERE `multiwishlist_id` = $wishlistId");
+		// Mage::dispatchEvent('itoris_wishlist_update', array('wishlist' => $this));
 	}
 
 	public function isProductInWishlist($productId) {
