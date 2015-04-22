@@ -26,6 +26,7 @@ $_helper    = $this->helper('catalog/output');
     jQuery(document).ready(function() {
         jQuery('#category-img').show();
         jQuery('#category-img').html('<?php echo $_imgHtml; ?>');
+        jQuery('#result').live('click', '.link-wishlist', function() { return false; });
     })
 </script>
 <div id="result"></div>
