@@ -68,6 +68,39 @@ class Itoris_MWishlist_Model_Mwishlistnames extends Varien_Object {
 		return $result['name'];
 	}
 
+
+	public function getAllIds($customerId = null, $editableOnly = false) {
+		$tableName = $this->table;
+		$results = $this->db->fetchAll("SELECT multiwishlist_id FROM $tableName order by multiwishlist_id ASC");
+		$ids = array();
+		foreach($results as $result) {
+			$ids[] = (int) $result['multiwishlist_id'];
+		}
+		return $ids;
+	}
+
+	public function getById($id) {
+		$db = Mage::getSingleton('core/resource')->getConnection('core_write');
+		return $db->fetchAll("SELECT 
+					   i.multiwishlist_customer_id, i.multiwishlist_is_main, e.item_id,
+					   pv.entity_id as 'product_id', w.qty as 'qty_ordered', w.added_at as 'date_order' 
+					   FROM {$this->itemsTable} as e
+					   inner join {$this->wishlistTable} as w
+					   on w.wishlist_item_id = e.item_id
+					   inner join {$this->tableCatalogProductEntity} as p
+					   on p.entity_id = w.product_id
+					   inner join {$this->tableEavAttribute} as a
+					   on a.entity_type_id = p.entity_type_id and a.attribute_code = 'name'
+					   inner join {$this->tableCatalogProductEntityVarchar} as pv
+					   on pv.entity_id = p.entity_id and pv.attribute_id = a.attribute_id
+					   inner join {$this->table} as i
+					   on i.`multiwishlist_id` = e.`multiwishlist_id`
+					   where e.multiwishlist_id = {$id}
+					   group by e.item_id
+					   order by pv.value
+		");
+	}
+
 	public function getnamecollection($customerId = null, $editableOnly = false) {
 		$tableName = $this->table;
 		$customerId = $customerId ? $customerId : (int)Mage::getSingleton('customer/session')->getCustomerId();
