@@ -35,7 +35,7 @@ $imgY = $helper->calculateHeight($imgX);
         <?php if ($this->helper('wishlist')->isRssAllow() && $this->hasWishlistItems()): ?>
             <a href="<?php echo $this->helper('wishlist')->getRssUrl(); ?>" class="link-rss"><?php echo $this->__('RSS Feed') ?></a>
         <?php endif; ?>
-        <h1><?php echo $this->__('My Wishlist') ?></h1>
+        <h1><?php echo $this->__('Reservation / Wishlist') ?></h1>
     </div>
     <div><label>Filter by SKU:</label> <input type="text" id="wishlist-product-filter" placeholder="type a product SKU" /> 
      <em>- Displaying <span id="nb-displayed-products"><?php echo count($this->getWishlistItems()); ?></span> of <?php echo count($this->getWishlistItems()); ?> product(s)</em>

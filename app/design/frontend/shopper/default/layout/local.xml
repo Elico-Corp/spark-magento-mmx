@@ -312,10 +312,11 @@
         </block>
     </search_index_list>
 
+
     <customer_account>
         <!-- Mage_Wishlist -->
         <reference name="customer_account_navigation">
-            <action method="addLink" translate="label" module="wishlist" ifconfig="wishlist/general/active"><name>reservation</name><path>reservation/</path><label>Reservation</label><position>10</position></action>
+            <action method="addLink" translate="label" module="wishlist" ifconfig="wishlist/general/active"><name>wishlist</name><path>wishlist/</path><label>Reservation / Wishlist</label></action>
         </reference>
     </customer_account>
 </layout>

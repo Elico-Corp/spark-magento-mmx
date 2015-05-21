@@ -25,7 +25,7 @@
 ?>
 <?php
 $namesmodel = Mage::getModel('itoris_mwishlist/mwishlistnames');
-$namescollection = $namesmodel->getnamecollection(null, true);
+$namescollection = array_reverse($namesmodel->getnamecollection(null, true));
 ?>
 <div id="overlay"></div>
 <div id="dialog" class="window">

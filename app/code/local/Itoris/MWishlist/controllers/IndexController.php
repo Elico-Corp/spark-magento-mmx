@@ -931,11 +931,11 @@ class Itoris_MWishlist_IndexController extends Mage_Wishlist_IndexController {
 		$helper = Mage::helper('wishlist');
 		$count = Mage::helper('wishlist')->getItemCount();
 		if ($count > 1) {
-			$text = $helper->__('My Wishlist (%d items)', $count);
+			$text = $helper->__('Reservation / Wishlist (%d items)', $count);
 		} else if ($count == 1) {
-			$text = $helper->__('My Wishlist (%d item)', $count);
+			$text = $helper->__('Reservation / Wishlist (%d item)', $count);
 		} else {
-			$text = $helper->__('My Wishlist');
+			$text = $helper->__('Reservation / Wishlist');
 		}
 		$result = array('link_text' => $text);
 		$this->getResponse()->setBody(Zend_Json::encode($result));

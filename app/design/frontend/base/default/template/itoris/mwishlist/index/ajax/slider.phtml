@@ -27,13 +27,13 @@
 <div id="tabsandcontent">
 <?php
 $namesmodel = Mage::getModel('itoris_mwishlist/mwishlistnames');
-$namescollection = $namesmodel->getnamecollection();
+$namescollection = array_reverse($namesmodel->getnamecollection());
 
 $id = $this->getRequest()->getParam('tabId');
 $temp = array();
 if ($id) {
 	$customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
-	$id = $namesmodel->checkMainWishlist($customerId);
+	$id = $namesmodel->checkReservationWishlist($customerId);
 }
 $temp = $namesmodel->getNameById($id);
 $wishlistId = $temp['multiwishlist_id'];

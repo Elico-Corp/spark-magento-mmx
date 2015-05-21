@@ -779,7 +779,7 @@ function getTweets(el, utils){
 }
 
 jQuery(document).ready(function () {
-	jQuery('#wishlist-product-filter').on('keyup', function() {
+    jQuery('body').on('keyup', '#wishlist-product-filter', function() {   
 	    jQuery('#wishlist-table tr.pdt-line').show()
             jQuery('#wishlist-table th').show();
             jQuery('#wishlist-no-product').hide();

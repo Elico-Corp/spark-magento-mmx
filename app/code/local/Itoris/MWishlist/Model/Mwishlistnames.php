@@ -69,9 +69,10 @@ class Itoris_MWishlist_Model_Mwishlistnames extends Varien_Object {
 	}
 
 
-	public function getAllIds($customerId = null, $editableOnly = false) {
+	public function getAllIds($reservation=False, $customerId = null, $editableOnly = false) {
+		$is_main = $reservation ? 0 : 1;
 		$tableName = $this->table;
-		$results = $this->db->fetchAll("SELECT multiwishlist_id FROM $tableName order by multiwishlist_id ASC");
+		$results = $this->db->fetchAll("SELECT multiwishlist_id FROM $tableName WHERE multiwishlist_is_main=$is_main order by multiwishlist_id ASC");
 		$ids = array();
 		foreach($results as $result) {
 			$ids[] = (int) $result['multiwishlist_id'];
@@ -80,10 +81,13 @@ class Itoris_MWishlist_Model_Mwishlistnames extends Varien_Object {
 	}
 
 	public function getById($id) {
+		$id = (int) $id;
 		$db = Mage::getSingleton('core/resource')->getConnection('core_write');
-		return $db->fetchAll("SELECT 
-					   i.multiwishlist_customer_id, i.multiwishlist_is_main, e.item_id,
-					   pv.entity_id as 'product_id', w.qty as 'qty_ordered', w.added_at as 'date_order' 
+		$res = $db->fetchAll("SELECT 
+					   i.multiwishlist_id as 'wishlist_id',
+					   i.multiwishlist_customer_id as 'customer_id', i.multiwishlist_is_main, e.item_id,
+					   pv.entity_id as 'product_id', w.qty as 'qty_ordered', w.added_at as 'date_order',
+					   c.store_id, c.website_id
 					   FROM {$this->itemsTable} as e
 					   inner join {$this->wishlistTable} as w
 					   on w.wishlist_item_id = e.item_id
@@ -95,10 +99,22 @@ class Itoris_MWishlist_Model_Mwishlistnames extends Varien_Object {
 					   on pv.entity_id = p.entity_id and pv.attribute_id = a.attribute_id
 					   inner join {$this->table} as i
 					   on i.`multiwishlist_id` = e.`multiwishlist_id`
+			    	   inner join customer_entity c
+				       on c.entity_id = i.multiwishlist_customer_id
 					   where e.multiwishlist_id = {$id}
 					   group by e.item_id
 					   order by pv.value
 		");
+		if(count($res) == 0) {
+		    return $db->fetchAll("
+		    	select i.multiwishlist_id as 'wishlist_id', i.multiwishlist_customer_id as 'customer_id',
+		    	i.multiwishlist_is_main, c.store_id, c.website_id, NOW() as 'date_order'
+		    	from itoris_mwishlists i
+		    	inner join customer_entity c
+		    	on c.entity_id = i.multiwishlist_customer_id
+				where i.multiwishlist_id={$id}");
+		}
+		return $res;
 	}
 
 	public function getnamecollection($customerId = null, $editableOnly = false) {

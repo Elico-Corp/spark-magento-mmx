@@ -71,7 +71,7 @@ class Itoris_MWishlist_Block_Frontview extends Mage_Core_Block_Template {
 			/** @var $wishlistModel Itoris_MWishlist_Model_Mwishlistnames */
 			$wishlistModel = Mage::getModel('itoris_mwishlist/mwishlistnames');
 
-			$tabId = (int)$wishlistModel->checkMainWishlist($customerId);
+			$tabId = (int)$wishlistModel->checkReservationWishlist($customerId);
 		}
 		$this->tabId = $tabId;
 

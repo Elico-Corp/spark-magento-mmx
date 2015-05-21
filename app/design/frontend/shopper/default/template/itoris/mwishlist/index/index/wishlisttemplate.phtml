@@ -32,10 +32,10 @@ $version = Mage::getVersion();
 $isEnabledPriceVisibility = $this->getDataHelper()->isEnabledProductVisibility();
 $canAddAllToShoppingCart = true;
 ?>
+<div id="central">
 <div><label>Filter by SKU:</label> <input type="text" id="wishlist-product-filter" placeholder="type a product SKU" /> 
  <em>- Displaying <span id="nb-displayed-products"><?php echo count($this->getWishlistItems()); ?></span> of <?php echo count($this->getWishlistItems()); ?> product(s)</em>
 </div>
-<div id="central">
 <div id='central_head'>
 	<?php
 	$temp = array();
@@ -233,7 +233,7 @@ $canAddAllToShoppingCart = true;
 	</fieldset>
 	</form>
 <?php else: ?>
-	<p><?php echo $this->__('You have no items in your wishlist.') ?></p>
+	<p><?php echo $this->__('No items') ?></p>
 <?php endif ?>
 </div>
 <script type="text/javascript">
