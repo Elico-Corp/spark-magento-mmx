@@ -9,7 +9,7 @@ class ElicoCorp_Catalog_Model_Product extends Mage_Catalog_Model_Product {
     {
         if($this->getCustomStatus() == 5 && $this->getCustomProductQty() > 0 && Mage::getSingleton('customer/session')->isLoggedIn()){
             $groupId = Mage::getSingleton('customer/session')->getCustomerGroupId();
-            if($groupId == 1 or $this->getCanSell() == True)
+            if($this->getCanSell() == True)
                 return false;
     	    return $this->isSalable();
 		}
