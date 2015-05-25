@@ -32,8 +32,8 @@
  * @see Mage_Catalog_Block_Product_Abstract
  */
 if(Mage::getSingleton('customer/session')->isLoggedIn()):
-    $groupId = Mage::getSingleton('customer/session')->getCustomerGroupId();
-    if($groupId != 1):
+    // $groupId = Mage::getSingleton('customer/session')->getCustomerGroupId();
+    // if($groupId != 1):
 
     $_coreHelper = $this->helper('core');
     $_weeeHelper = $this->helper('weee');
@@ -427,5 +427,5 @@ if(Mage::getSingleton('customer/session')->isLoggedIn()):
         </div>
     <?php endif; /* if ($this->getDisplayMinimalPrice() && $_minimalPrice): */ ?>
 <?php endif; /* if (!$_product->isGrouped()): */ ?>
-<?php endif;?>
+<?php //endif;?>
 <?php endif;?>
