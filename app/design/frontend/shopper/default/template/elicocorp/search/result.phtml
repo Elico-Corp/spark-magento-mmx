@@ -1,10 +1,7 @@
 <?php 
-$store_code = Mage::app()->getStore()->getCode();
-$cat_id = 3;
-if($store_code != 'default') {
-	$cat_id = 13;
-}
-$category = Mage::getModel('catalog/category')->load($cat_id);
+// $store_id = Mage::app()->getStore()->getId();
+$category = Mage::getModel('catalog/category')->loadByAttribute('url_key', 'collections');
+// $category = Mage::getModel('catalog/category')->load($cat_id);
 $_helper    = $this->helper('catalog/output');
 ?>
 <div class="std" style="margin-top:84px">
@@ -27,6 +24,7 @@ $_helper    = $this->helper('catalog/output');
         jQuery('#category-img').show();
         jQuery('#category-img').html('<?php echo $_imgHtml; ?>');
         jQuery('#result').live('click', '.link-wishlist', function() { return false; });
+        jQuery('body').on('click', '.products-grid li.item a', function() {window.location = jQuery(this).attr('href')});
     })
 </script>
 <div id="result"></div>
