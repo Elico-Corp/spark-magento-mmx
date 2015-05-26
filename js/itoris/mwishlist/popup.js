@@ -91,7 +91,7 @@ Itoris.WishlistPopup = Class.create({
 	checkWishlist: function(elm) {
 		this.currentCheckbox = elm;
 		if (this.currentCheckbox.value != 'new') {
-			$('itoris-wishlist-new-name').value = '';
+			$$('itoris-wishlist-new-name').value = '';
 		}
 	},
 	selectWishlist: function() {

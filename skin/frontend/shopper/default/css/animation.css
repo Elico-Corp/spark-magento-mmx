@@ -75,6 +75,7 @@ transition: background 200ms ease-in-out;
     -webkit-transition: all 600ms ease-in-out;
     -moz-transition: all 600ms ease-in-out;
     -o-transition: all 600ms ease-in-out;
+    font-size: 16px;
 }
 #nav>li>a:hover, #nav ul li a:hover, #nav>li>a:hover>span,
 #mobile-nav>li>a:hover, #mobile-nav ul li a:hover, #mobile-nav>li>a:hover>span,
