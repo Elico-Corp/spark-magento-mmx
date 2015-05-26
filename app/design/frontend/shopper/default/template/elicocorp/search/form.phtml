@@ -10,7 +10,7 @@
         <?php echo Mage::app()->getStore(); ?>
         <form id="elico_search">
                 <?php
-            $category = Mage::getModel('catalog/category')->loadByAttribute('name', 'MMX');
+            $category = Mage::getModel('catalog/category')->loadByAttribute('url_key', 'search');
             $category_ids = explode(',', $category->getChildren());
             ?>
                 <div class="input-box">
