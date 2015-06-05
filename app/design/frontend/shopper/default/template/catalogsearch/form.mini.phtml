@@ -83,3 +83,8 @@ if (isset($config['design']['search_field']) && $config['design']['search_field'
     </form>
 </div>
 <?php endif; ?>
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        jQuery('.form-search').wrap('<form id="search_mini_form" action="<?php echo $this->helper('catalogsearch')->getResultUrl() ?>"  method="get"></form>');
+    })
+</script>
