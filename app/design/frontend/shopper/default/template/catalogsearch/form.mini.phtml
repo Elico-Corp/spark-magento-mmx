@@ -34,15 +34,15 @@ if (isset($config['design']['search_field']) && $config['design']['search_field'
         <form id="search_mini_form" action="<?php echo $this->helper('catalogsearch')->getResultUrl() ?>" method="get">
             <div class="form-search">
                 <span>Search</span>
-                <input id="search" type="text" name="<?php echo substr($this->helper('catalogsearch')->getQueryParamName(), 1, -1) ?>"
-                       value="<?php echo $this->helper('catalogsearch')->getEscapedQueryText() ?>" class="input-text" placeholder="<?php echo $this->__('Type and hit enter') ?>" />
+                <input id="search" type="text" name="<?php echo $this->helper('catalogsearch')->getQueryParamName() ?>"
+                       value="<?php echo substr($this->helper('catalogsearch')->getEscapedQueryText(), 6, -6)?>" class="input-text" placeholder="<?php echo $this->__('Type and hit enter') ?>"  />
                 <button type="submit" class="hidden" title="<?php echo $this->__('Search') ?>"></button>
             </div>
             <div id="search_autocomplete" class="search-autocomplete"></div>
             <script type="text/javascript">
                 //<![CDATA[
-                var searchForm = new Varien.searchForm('search_mini_form', 'search', '<?php echo $this->__('Search entire store here...') ?>');
-                searchForm.initAutocomplete('<?php echo $this->helper('catalogsearch')->getSuggestUrl() ?>', 'search_autocomplete');
+                // var searchForm = new Varien.searchForm('search_mini_form', 'search', '<?php echo $this->__('Search entire store here...') ?>');
+                // searchForm.initAutocomplete('<?php echo $this->helper('catalogsearch')->getSuggestUrl() ?>', 'search_autocomplete');
                 //]]>
             </script>        </form>
         <?php if(Mage::getSingleton('customer/session')->isLoggedIn()): ?>
@@ -67,11 +67,9 @@ if (isset($config['design']['search_field']) && $config['design']['search_field'
         jQuery('.form-search').wrap('<form id="search_mini_form" action="<?php echo $this->helper('catalogsearch')->getResultUrl() ?>"  method="get"></form>');
         var searchForm = new Varien.searchForm('search_mini_form', 'search', '<?php echo $this->__('Search entire store here...') ?>');
         searchForm.initAutocomplete('<?php echo $this->helper('catalogsearch')->getSuggestUrl() ?>', 'search_autocomplete');
-        jQuery('.form-search').keypress(function(event){
-            var keycode = (event.keyCode ? event.keyCode : event.which);
-            if(keycode == '13'){
-                jQuery('#search').val('"'+ jQuery('#search').val() + '"');
-            }
+
+        jQuery('#search_mini_form').on('submit', function() {
+            jQuery('#search').val('"'+jQuery('#search').val()+'"');
         });
     })
 </script>
