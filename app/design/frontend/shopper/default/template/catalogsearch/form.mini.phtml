@@ -39,12 +39,7 @@ if (isset($config['design']['search_field']) && $config['design']['search_field'
                 <button type="submit" class="hidden" title="<?php echo $this->__('Search') ?>"></button>
             </div>
             <div id="search_autocomplete" class="search-autocomplete"></div>
-            <script type="text/javascript">
-                //<![CDATA[
-                // var searchForm = new Varien.searchForm('search_mini_form', 'search', '<?php echo $this->__('Search entire store here...') ?>');
-                // searchForm.initAutocomplete('<?php echo $this->helper('catalogsearch')->getSuggestUrl() ?>', 'search_autocomplete');
-                //]]>
-            </script>        </form>
+        </form>
         <?php if(Mage::getSingleton('customer/session')->isLoggedIn()): ?>
             <a href="/catalogsearch/advanced/">Advanced Search</a>
         <?php endif;?>
@@ -69,7 +64,7 @@ if (isset($config['design']['search_field']) && $config['design']['search_field'
         searchForm.initAutocomplete('<?php echo $this->helper('catalogsearch')->getSuggestUrl() ?>', 'search_autocomplete');
 
         jQuery('#search_mini_form').on('submit', function() {
-            jQuery('#search').val('"'+jQuery('#search').val()+'"');
+            jQuery('#search').val('"'+jQuery('#search').val().replace(/"/g, '') +'"');
         });
     })
 </script>
