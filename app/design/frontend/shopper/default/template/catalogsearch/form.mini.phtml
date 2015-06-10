@@ -66,5 +66,13 @@ if (isset($config['design']['search_field']) && $config['design']['search_field'
         jQuery('#search_mini_form').on('submit', function() {
             jQuery('#search').val('"'+jQuery('#search').val().replace(/"/g, '') +'"');
         });
+
+        jQuery('#search').keypress(function(event){
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+                jQuery(this).val('"'+jQuery(this).val().replace(/"/g, '') +'"');
+            }
+        
+        });
     })
 </script>
