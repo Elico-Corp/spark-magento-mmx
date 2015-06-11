@@ -84,13 +84,13 @@ class Mage_CatalogSearch_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @return Mage_CatalogSearch_Model_Query
      */
-    public function getQuery()
+    public function getQuery($suggest=False)
     {
         if (!$this->_query) {
             $this->_query = Mage::getModel('catalogsearch/query')
-                ->loadByQuery($this->getQueryText());
+                ->loadByQuery($this->getQueryText($suggest));
             if (!$this->_query->getId()) {
-                $this->_query->setQueryText($this->getQueryText());
+                $this->_query->setQueryText($this->getQueryText($suggest));
             }
         }
         return $this->_query;
@@ -113,7 +113,7 @@ class Mage_CatalogSearch_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @return string
      */
-    public function getQueryText()
+    public function getQueryText($suggest=False)
     {
         if (!isset($this->_queryText)) {
             $this->_queryText = $this->_getRequest()->getParam($this->getQueryParamName());
@@ -132,6 +132,9 @@ class Mage_CatalogSearch_Helper_Data extends Mage_Core_Helper_Abstract
                 }
             }
         }
+        if($suggest==True) {
+            return $this->_queryText;   
+        }
         return '"'.str_replace('"', '', $this->_queryText).'"';
     }
 
@@ -142,7 +145,7 @@ class Mage_CatalogSearch_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getEscapedQueryText()
     {
-        return $this->escapeHtml(str_replace('"', '', $this->getQueryText()));
+        return $this->escapeHtml($this->getQueryText());
     }
 
     /**
@@ -152,7 +155,7 @@ class Mage_CatalogSearch_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getSuggestCollection()
     {
-        return $this->getQuery()->getSuggestCollection();
+        return $this->getQuery(True)->getSuggestCollection();
     }
 
     /**
