@@ -93,6 +93,10 @@ class Mage_CatalogSearch_Helper_Data extends Mage_Core_Helper_Abstract
                 $this->_query->setQueryText($this->getQueryText($suggest));
             }
         }
+        if($this->_query->num_results == 0 && $suggest == False) {
+            $this->_query = null;
+            return $this->getQuery(True);
+        }
         return $this->_query;
     }
 
