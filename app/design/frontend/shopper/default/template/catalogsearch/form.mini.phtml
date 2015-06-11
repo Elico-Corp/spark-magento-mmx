@@ -62,17 +62,5 @@ if (isset($config['design']['search_field']) && $config['design']['search_field'
         jQuery('.form-search').wrap('<form id="search_mini_form" action="<?php echo $this->helper('catalogsearch')->getResultUrl() ?>"  method="get"></form>');
         var searchForm = new Varien.searchForm('search_mini_form', 'search', '<?php echo $this->__('Search entire store here...') ?>');
         searchForm.initAutocomplete('<?php echo $this->helper('catalogsearch')->getSuggestUrl() ?>', 'search_autocomplete');
-
-        jQuery('#search_mini_form').on('submit', function() {
-            jQuery('#search').val('"'+jQuery('#search').val().replace(/"/g, '') +'"');
-        });
-
-        jQuery('#search').keypress(function(event){
-            var keycode = (event.keyCode ? event.keyCode : event.which);
-            if(keycode == '13'){
-                jQuery(this).val('"'+jQuery(this).val().replace(/"/g, '') +'"');
-            }
-        
-        });
     })
 </script>
