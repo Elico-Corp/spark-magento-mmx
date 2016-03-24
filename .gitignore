@@ -9,5 +9,6 @@ media/js/*
 media/css/*.css
 errors/local.xml
 app/etc/local.xml
+downloader/cache.cfg
 *.DS_Store
 *.swp
