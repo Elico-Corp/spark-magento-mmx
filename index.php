@@ -46,7 +46,7 @@ error_reporting(E_ALL);
  * Compilation includes configuration file
  */
 define('MAGENTO_ROOT', getcwd());
-define('IMAGE_SERVER', 'http://images.sparkmodel.com/');
+define('IMAGE_SERVER', 'https://images.sparkmodel.com/');
 define('SEARCH_FIELDS', serialize(array('x_mmx_scale', 'custom_manufacturer', 'x_mmx_model', 'model_year', 'x_mmx_race_edition', 'race_edition_year', 'x_mmx_driver', 'year', )));
 define('SEARCH_FIELDS_MULTIPLE', serialize(array('x_mmx_driver')));
 
