@@ -4,6 +4,8 @@ var/session/*
 var/log/*
 var/locks/*
 var/report/*
+var/backups
+var/export
 media/catalog/product/cache/**/*
 media/js/*
 media/css/*.css
