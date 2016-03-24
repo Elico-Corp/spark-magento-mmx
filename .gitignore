@@ -10,5 +10,6 @@ media/css/*.css
 errors/local.xml
 app/etc/local.xml
 downloader/cache.cfg
+downloader/.cache/*
 *.DS_Store
 *.swp
