@@ -415,7 +415,7 @@ class Itoris_MWishlist_Model_Mwishlistnames extends Varien_Object {
 	public function getWishlistItems($id) {
 		/**@var $db Varien_Db_Adapter_Pdo_Mysql*/
 		$db = Mage::getSingleton('core/resource')->getConnection('core_write');
-		return $db->fetchAll("SELECT e.item_id as id, pv.value as name FROM {$this->itemsTable} as e
+		return $db->fetchAll("SELECT e.item_id as id, pv.value as name, w.product_id, w.qty FROM {$this->itemsTable} as e
 					   inner join {$this->wishlistTable} as w
 					   on w.wishlist_item_id = e.item_id
 					   inner join {$this->tableCatalogProductEntity} as p
