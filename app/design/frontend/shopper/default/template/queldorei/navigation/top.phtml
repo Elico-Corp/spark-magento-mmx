@@ -35,7 +35,7 @@
                 });
             </script>
         <?php
-         } elseif (strpos(Mage::helper('core/url')->getCurrentUrl(),'about_us') != false ) {
+         } elseif (strpos(Mage::helper('core/url')->getCurrentUrl(),'about_us') != false || strpos(Mage::helper('core/url')->getCurrentUrl(),'contacts') != false ) {
             $_anyActive = true;
         ?>
             <script type="text/javascript">
@@ -72,6 +72,7 @@
                 ->load('partners');
         ?>
         <!--<li class="level0 level-top"><a href="<?php echo $this->getBaseUrl().$custom_page->getIdentifier(); ?>" class="level-top"><span><?php echo $custom_page->getTitle(); ?></span></a></li>-->
+        <li class="level0 level-top <?php if(strpos(Mage::helper('core/url')->getCurrentUrl(),'contacts') != false){ echo 'active'; } ?>"><a href="<?php echo $this->getBaseUrl().'/contacts'; ?>" class="level-top"><span><?php echo $this->__('Contact us'); ?></span></a></li>
     </ul>
 </div>
 <?php endif ?>
