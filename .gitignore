@@ -6,6 +6,7 @@ var/locks/*
 var/report/*
 var/backups
 var/export
+var/resource_config.json
 media/catalog/product/cache/**/*
 media/js/*
 media/css/*.css
