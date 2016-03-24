@@ -13,5 +13,6 @@ errors/local.xml
 app/etc/local.xml
 downloader/cache.cfg
 downloader/.cache
+wp/wp-content/uploads
 *.DS_Store
 *.swp
