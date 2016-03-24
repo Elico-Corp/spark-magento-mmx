@@ -49,6 +49,7 @@
  *
  */
 .post-list li.item { margin-bottom: 20px; }
+.post-list li.item .post-list-item { height: 1%; overflow: hidden; }
 .post-list h2 { line-height: 1em; margin-bottom: 1em; }
 
 /**
@@ -105,7 +106,7 @@
 
 img[class*="align"],
 img[class*="wp-image-"],
-#content .gallery .gallery-icon img {/* Add fancy borders to all WordPress-added images but not things like badges and icons and the like */
+.gallery .gallery-icon img {/* Add fancy borders to all WordPress-added images but not things like badges and icons and the like */
 	border: 1px solid #ddd;
 	padding: 6px;
 }
@@ -174,6 +175,16 @@ background: #fff;
 border-color: #ddd;
 }
 
+.wp-caption .wp-caption-text,
+.gallery-caption,
+.entry-caption {
+	font-style: italic;
+	font-size: 12px;
+	font-size: 0.857142857rem;
+	line-height: 2;
+	color: #757575;
+}
+
 div.gallery { height: 1%; overflow: hidden; }
 .gallery-columns-2 dl.gallery-item { width: 50%; }
 .gallery-columns-3 dl.gallery-item { width: 33%; }
@@ -181,9 +192,29 @@ div.gallery { height: 1%; overflow: hidden; }
 .gallery-columns-5 dl.gallery-item { width: 20%; }
 
 dl.gallery-item { float: left; }
+dl.gallery-item .gallery-icon { overflow: hidden; }
 
 .post-view ul.form-list { list-style: none outside none; }
 
+/*
+ * WP Calendar
+ */
+#wp-calendar {
+	margin: 0;
+	width: 100%;
+	padding: 5px 10px;
+}
+#wp-calendar th {
+	font-weight: bold;
+}
+#wp-calendar th,
+#wp-calendar td,
+#wp-calendar caption {
+	text-align: left;
+}
+#wp-calendar #next {
+	text-align: right;
+}
 
 /**
  * Yarpp thumbnails
@@ -232,4 +263,42 @@ dl.gallery-item { float: left; }
 .yarpp-thumbnail-default > img.yarpp-thumbnail-default-tall {
 	width: 120px;
 	max-height: none;
+}
+
+#recipress_recipe {
+	clear: both;
+}
+
+/**
+ * Product shortcode
+ */
+.std ul.mini-products-list {
+	list-style: none;
+	margin: 0;
+	padding-left: 0;
+}
+
+.std ul.mini-products-list ul.item {
+	list-style: none;
+}
+
+img.max-width { max-width: 100%; }
+
+/**
+ * Lightbox styles
+ */
+#fp-gallery { 
+	position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100;
+}
+
+#fp-gallery .shadow { 
+	position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 101; background: #000 url('ajax-loader.gif') no-repeat center 40px;
+}
+
+#fp-gallery .inner { 
+	position: relative; z-index: 102; background: #fff; max-width: 95%; margin: 1% auto 0; background: #fff; border: 4px solid #ddd; box-shadow: 4px 4px 4px #666; display: inline-block; min-width: 400px; min-height: 200px;
+}
+
+#fp-gallery .close {
+		display: inline-block; position: absolute; background: #fff url('lightbox-close.png') no-repeat center center; padding: 2px; border-radius: 50%; cursor: pointer; text-decoration: none; display: inline-block; height: 48px; width: 48px; margin: auto; top: 10px; right: 10px; text-indent: -999999px;
 }
