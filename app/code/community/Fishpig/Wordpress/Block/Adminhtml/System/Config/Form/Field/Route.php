@@ -34,7 +34,8 @@ class Fishpig_Wordpress_Block_Adminhtml_System_Config_Form_Field_Route extends M
 					var inp = $('%s');
 					var MAGE_URL = '%s';
 										
-					inp.insert({'after': new Element('p', {'class': 'note', 'id': inp.id + '-note'})});
+					var dp = new Element('p', {'class': 'note', 'id': inp.id + '-note'})
+					inp.insert({'after': dp});
 					
 					var nt = $(inp.id + '-note');
 
@@ -60,7 +61,29 @@ class Fishpig_Wordpress_Block_Adminhtml_System_Config_Form_Field_Route extends M
 	protected function _getBaseUrl()
 	{
 		$helper = Mage::helper('wordpress');
+		
+		$baseUrl = rtrim($helper->getUrl(), '/');
+		
+		if ($helper->getBlogRoute()) {
+			return substr($baseUrl, 0, -strlen($helper->getBlogRoute()));
+		}
 
-		return substr(rtrim($helper->getUrl(), '/'), 0, -strlen($helper->getBlogRoute()));
+		$params = array(
+			'_direct' 	=> trim($this->getBlogRoute(), '/'),
+			'_secure' 	=> false,
+			'_nosid' 	=> true,
+			'_store'		=> Mage::app()->getStore()->getId(),
+		);
+		
+		if (Mage::app()->getStore()->getCode() == 'admin') {
+			if ($storeCode = Mage::app()->getRequest()->getParam('store')) {
+				$params['_store'] = $storeCode;
+			}
+			else {
+				$params['_store'] = $helper->getDefaultStore(Mage::app()->getRequest()->getParam('website', null))->getId();
+			}
+		}
+			
+		return Mage::getUrl('', $params);
 	}
 }

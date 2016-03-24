@@ -22,6 +22,7 @@ implements Mage_Adminhtml_Block_Widget_Tab_Interface
 	public function __construct()
 	{
 		parent::__construct();
+
 		$this->setId($this->_getMagentoEntity() . $this->_getWpEntity());
 		$this->setDefaultSort($this->_getDefaultSort());
 		$this->setDefaultDir($this->_getDefaultDir());
@@ -86,6 +87,15 @@ implements Mage_Adminhtml_Block_Widget_Tab_Interface
 				'index' => 'post_title',
 			));
 			
+			$postTypes = array_keys(Mage::helper('wordpress/app')->getPostTypes());
+						
+			$this->addColumn('post_type', array(
+				'header'=> 'Type',
+				'index' => 'post_type',
+				'type' => 'options',
+				'options' => array_combine($postTypes, $postTypes),
+			));
+			
 			$this->addColumn('post_date', array(
 				'header'=> 'Post Date',
 				'index' => 'post_date',
@@ -98,10 +108,19 @@ implements Mage_Adminhtml_Block_Widget_Tab_Interface
 				'header'=> 'Name',
 				'index' => 'name',
 			));
-			
+
 			$this->addColumn('slug', array(
 				'header'=> 'Slug',
 				'index' => 'slug',
+			));
+			
+			$taxonomies = array_keys(Mage::helper('wordpress/app')->getTaxonomies());
+						
+			$this->addColumn('taxonomy', array(
+				'header'=> 'Type',
+				'index' => 'taxonomy',
+				'type' => 'options',
+				'options' => array_combine($taxonomies, $taxonomies),
 			));
     	}
     	
@@ -122,28 +141,36 @@ implements Mage_Adminhtml_Block_Widget_Tab_Interface
 
     protected function _prepareCollection()
     {
-		if ($this->_getWpEntity() === 'post') {
-			$collection = Mage::getResourceModel('wordpress/post_collection')
-				->addIsPublishedFilter();
+	    if (!$this->getCollection()) {
+			if ($this->_getWpEntity() === 'post') {
+				$collection = Mage::getResourceModel('wordpress/post_collection')
+					->addPostTypeFilter(array_keys(Mage::helper('wordpress/app')->getPostTypes()))
+#					->removePermalinkFromSelect()
+					->addIsViewableFilter();
+			}
+			else if ($this->_getWpEntity() === 'category') {
+				$collection = Mage::getResourceModel('wordpress/term_collection')->addTaxonomyFilter(
+					array_keys(Mage::helper('wordpress/app')->getTaxonomies())
+				);
+			}
+			else {
+				return false;
+			}
+			
+	#		Mage::dispatchEvent('wordpress_association_' . $this->_getWpEntity() . '_collection_load_before', array('collection' => $collection, 'grid' => $this));
+			
+			Mage::helper('wordpress/associations')->addRelatedPositionToSelect($collection, $this->getAssociationType(), $this->_getObject()->getId(), $this->getStoreId());
+	
+			$this->setCollection($collection);
 		}
-		else if ($this->_getWpEntity() === 'category') {
-			$collection = Mage::getResourceModel('wordpress/post_category_collection');
-		}
-		else {
-			return false;
-		}
-
-		Mage::helper('wordpress/associations')->addRelatedPositionToSelect($collection, $this->getAssociationType(), $this->_getObject()->getId(), $this->getStoreId());
-
-		$this->setCollection($collection);
 		
 		try {
-			return parent::_prepareCollection();
+			 return parent::_prepareCollection();
 		}
 		catch (Exception $e) {
 			echo sprintf('<div><ul class="messages"><li class="error-msg"><ul><li><span>%s</span></li></ul></li></ul></div>', $e->getMessage());
 			echo '<p>Your WordPress database user does not have permission to access the association tables in the Magento database. To fix this, either grant SELECT permission for your WordPress database user to the Magento tables that start with wordpress_ or merge your WordPress and Magento databases.</p>';
-			echo '<p>If you are having trouble doing this or just want it handling quickly for you, FishPig offer a <a href="http://fishpig.co.uk/migrate-wordpress-database-to-magento.html?mag" target="_blank">WordPress and Magento database merging</a> service.</p>';
+			echo '<p>If you are having trouble doing this or just want it handling quickly for you, FishPig offer a <a href="http://fishpig.co.uk/magento/wordpress-integration/services/merge-databases/?ref=errassoc" target="_blank">WordPress and Magento database merging</a> service.</p>';
 			exit;
 		}
 	}
@@ -189,7 +216,7 @@ implements Mage_Adminhtml_Block_Widget_Tab_Interface
 	 */
 	public function integrationIsEnabled()
 	{
-		return Mage::helper('wordpress/database')->isConnected() && Mage::helper('wordpress/database')->isQueryable();
+		return Mage::helper('wordpress/app')->getDbConnection() !== false;
 	}
 
     /**
@@ -363,5 +390,10 @@ implements Mage_Adminhtml_Block_Widget_Tab_Interface
     public function getStoreId()
     {
     	return Mage::app()->getFrontController()->getAction()->getStoreId();
+    }
+    
+    public function getMultipleRows($item)
+    {
+	    return false;
     }
 }

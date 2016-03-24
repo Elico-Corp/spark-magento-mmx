@@ -6,7 +6,7 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 
-class Fishpig_Wordpress_Block_Sidebar_Widget_Twitterpro extends Mage_Core_Block_Template
+class Fishpig_Wordpress_Block_Sidebar_Widget_Yarpp extends Fishpig_Wordpress_Block_Abstract
 {
 	/**
 	 * This block is deprecated and will no longer work

@@ -22,10 +22,10 @@ class Fishpig_Wordpress_Helper_Shortcode_Product extends Fishpig_Wordpress_Helpe
 	 * Apply the Vimeo short code
 	 *
 	 * @param string &$content
-	 * @param Fishpig_Wordpress_Model_Post_Abstract $object
+	 * @param Fishpig_Wordpress_Model_Post $post
 	 * @return void
 	 */	
-	protected function _apply(&$content, Fishpig_Wordpress_Model_Post_Abstract $object)
+	protected function _apply(&$content, Fishpig_Wordpress_Model_Post $post)
 	{
 		if (($shortcodes = $this->_getShortcodes($content)) !== false) {
 			foreach($shortcodes as $shortcode) {
@@ -37,14 +37,45 @@ class Fishpig_Wordpress_Helper_Shortcode_Product extends Fishpig_Wordpress_Helpe
 						$params->setIds(array($params->getId()));
 					}
 					else if ($params->getSku()) {
-						$params->setIds(array($collection->getResource()->getIdBySku($params->getSku())));
+						$params->setIds(array(Mage::getResourceModel('catalog/product')->getIdBySku($params->getSku())));
 					}
-				
-					if (!$params->getIds()) {
-						throw new Exception('The id, sku or ids parameter is not set for the product shortcode');
+					else if ($params->getIds()) {
+						$params->setIds(explode(',', $params->getIds()));
 					}
+					
+					if ($params->getIds()) {
+						$collection->addAttributeToFilter('entity_id', array('in' => $params->getIds()));
+					}
+					else if ($params->getAttribute() && ($params->getValue() || $params->getValueId())) {
+						if ($params->getValue()) {
+							$attribute = Mage::getSingleton('eav/config')->getAttribute('catalog_product', $params->getAttribute());
 							
-					Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($collection);
+							if (!$attribute->getSourceModel()) {
+								$params->setValueId($params->getValue());
+							}
+							else if ($optionId = $attribute->getSource()->getOptionId($params->getValue())) {
+								$params->setValueId($optionId);
+							}
+						}
+						
+						if ($params->getValueId()) {
+							$collection->addAttributeToFilter($attribute->getAttributeCode(), $params->getValueId());
+						}
+						else {
+							throw new Exception('Invalid value/value_id set for attribute in the product shortcode.');
+						}
+						
+						if ($params->getOrder()) {
+							$collection->setOrder($params->getOrder(), ($params->getDir() ? $params->getDir() : 'asc'));
+						}
+						
+						if ($params->getLimit()) {
+							$collection->setPageSize((int)$params->getLimit());
+						}
+					}
+					else if (!$params->getIds()) {
+						throw new Exception('The id, sku, ids or attribute parameter is not set for the product shortcode');
+					}
 					
 					if (!Mage::getStoreConfigFlag('cataloginventory/options/show_out_of_stock')) {
 						Mage::getSingleton('cataloginventory/stock')->addInStockFilterToCollection($collection);
@@ -52,21 +83,22 @@ class Fishpig_Wordpress_Helper_Shortcode_Product extends Fishpig_Wordpress_Helpe
 
 					$collection->addAttributeToSelect(Mage::getSingleton('catalog/config')->getProductAttributes())
 						->addAttributeToFilter('status', 1)
-						->addAttributeToFilter('entity_id', array('in' => $params->getIds()))
+						->addAttributeToFilter('visibility', array('in' => array(2, 4)))
 						->load();
-					
+
 					if ($collection->count() === 0) {
 						throw new Exception('No valid products used in product shortcode');
 					}
 					
 					$template = $params->getTemplate() ? $params->getTemplate() : 'wordpress/shortcode/product.phtml';
-						
+
 					$html = $this->_createBlock('catalog/product')
 						->setTemplate($template)
 						->setItems($collection)
 						->setProducts($collection)
 						->setProduct($collection->getFirstItem())
 						->setProductId($collection->getFirstItem()->getId())
+						->setShortcodeParams($params)
 						->toHtml();
 
 					$content = str_replace($shortcode->getHtml(), $html, $content);

@@ -56,6 +56,7 @@ class Fishpig_Wordpress_Block_Homepage extends Fishpig_Wordpress_Block_Post_List
 	protected function _getPostCollection()
 	{
 		return parent::_getPostCollection()
-			->addStickyPostsToCollection();
+			->addStickyPostsToCollection()
+			->addPostTypeFilter('post');
 	}
 }

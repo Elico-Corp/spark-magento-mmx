@@ -6,8 +6,13 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 
-abstract class Fishpig_Wordpress_Block_Feed_Abstract extends Mage_Core_Block_Template
+abstract class Fishpig_Wordpress_Block_Feed_Abstract extends Fishpig_Wordpress_Block_Abstract
 {
+	/**
+	 *
+	 * @param $feed
+	 * @return
+	 */
 	abstract protected function _addEntriesToFeed($feed);
 	
 	/**
@@ -72,9 +77,15 @@ abstract class Fishpig_Wordpress_Block_Feed_Abstract extends Mage_Core_Block_Tem
 	 */
 	public function getTitle()
 	{
-		return $this->decode(
-			Mage::helper('wordpress')->getWpOption('blogname')
-		);
+		if (($blogName = $this->decode(trim(Mage::helper('wordpress')->getWpOption('blogname')))) !== '') {
+			return $blogName;
+		}
+		
+		if (($storeName = $this->decode(trim(Mage::getStoreConfig('general/store_information/name')))) !== '') {
+			return $storeName . ' ' . $this->__('Blog Feed');
+		}
+		
+		return $this->__('Blog Feed');
 	}
 
 	/**
@@ -123,7 +134,7 @@ abstract class Fishpig_Wordpress_Block_Feed_Abstract extends Mage_Core_Block_Tem
 	*/
 	public function decode($value)
 	{
-		return html_entity_decode($value, ENT_NOQUOTES, $this->getBlogCharset());
+		return html_entity_decode($value, ENT_NOQUOTES, $this->getCharset());
 	}
 	
 	/**

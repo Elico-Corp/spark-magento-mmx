@@ -6,7 +6,7 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
  
-class Fishpig_Wordpress_Model_Menu_Item extends Fishpig_Wordpress_Model_Post_Abstract
+class Fishpig_Wordpress_Model_Menu_Item extends Fishpig_Wordpress_Model_Post
 {
 	/**
 	 * Link types used to determine menu item functionality
@@ -31,6 +31,7 @@ class Fishpig_Wordpress_Model_Menu_Item extends Fishpig_Wordpress_Model_Post_Abs
 	*/
 	protected $_eventObject = 'menu_item';
 
+	
 	public function _construct()
 	{
 		$this->_init('wordpress/menu_item');
@@ -83,21 +84,23 @@ class Fishpig_Wordpress_Model_Menu_Item extends Fishpig_Wordpress_Model_Post_Abs
 	 */
 	public function getObject()
 	{
+
+		$this->setObject(false);
+
 		if (!$this->isCustomLink()) {
-			$this->setObject(false);
-			
 			if ($this->getObjectType()) {
-				if ($this->isPostTypeLink() && $this->getObjectType() !== 'page')  {
-					$object = Mage::getModel('wordpress/post')->setPostType($this->getObjectType());
-				}
-				else {
-					$object = Mage::getModel('wordpress/' . $this->getObjectType());
-				}
+				if ($menuObjectId = $this->getMetaValue('_menu_item_object_id')) {
+					if ($this->isPostTypeLink())  {
+						$object = Mage::getModel('wordpress/post')->setPostType($this->getObjectType());
+					}
+					else if ($this->isTaxonomyLink()) {
+						$object = Mage::getModel('wordpress/term')->setTaxonomy($this->getObjectType());
+					}
+					else {
+						$object = Mage::getModel('wordpress/' . $this->getObjectType());
+					}
 				
-				if ($object) {
-					$object->load($this->getMetaValue('_menu_item_object_id'));
-				
-					if ($object->getId()) {
+					if ($object && $object->setSkipObjectCache(true)->load($menuObjectId)->getId()) {
 						$this->setObject($object);
 					}
 				}
@@ -125,13 +128,7 @@ class Fishpig_Wordpress_Model_Menu_Item extends Fishpig_Wordpress_Model_Post_Abs
 	public function getObjectType()
 	{
 		if (!$this->_getData('object_type')) {
-			$objectType = $this->getMetaValue('_menu_item_object');
-			
-			if ($objectType === 'category') {
-				$objectType = 'post_category';
-			}
-			
-			$this->setObjectType($objectType);
+			$this->setObjectType($this->getMetaValue('_menu_item_object'));
 		}
 		
 		return $this->_getData('object_type');

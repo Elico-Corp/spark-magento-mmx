@@ -18,9 +18,19 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 		try {
 			if ($this->isEnabled()) {
 				if ($this->isFullyIntegrated()) {
-					return $this->getUrl();
+					if ($this->_isCached('toplink_url')) {
+						return $this->_cached('toplink_url');
+					}
+					
+					$transport = new Varien_Object(array('toplink_url' => $this->getUrl()));
+					
+					Mage::dispatchEvent('wordpress_get_toplink_url', array('transport' => $transport));
+
+					$this->_cache('toplink_url', $transport->getToplinkUrl());
+					
+					return $transport->getToplinkUrl();
 				}
-			
+
 				return $this->getWpOption('home');
 			}
 		}
@@ -55,7 +65,17 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 	public function getTopLinkLabel()
 	{
 		if ($this->isEnabled()) {
-			return Mage::getStoreConfig('wordpress/toplink/label');
+			if ($this->_isCached('toplink_label')) {
+				return $this->_cached('toplink_label');
+			}
+					
+			$transport = new Varien_Object(array('toplink_label' => Mage::getStoreConfig('wordpress/toplink/label')));
+			
+			Mage::dispatchEvent('wordpress_get_toplink_label', array('transport' => $transport));
+
+			$this->_cache('toplink_label', $transport->getToplinkLabel());
+			
+			return $transport->getToplinkLabel();
 		}
 		
 		return false;
@@ -99,7 +119,7 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 	 */
 	public function getTableName($table)
 	{
-		return Mage::helper('wordpress/database')->getTableName($table);
+		return Mage::getSingleton('core/resource')->getTableName($table);
 	}
 	
 	/**
@@ -110,8 +130,8 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 	 */
 	public function isEnabled()
 	{
-		return Mage::getStoreConfigFlag('wordpress/module/enabled')
-			&& !Mage::getStoreConfig('advanced/modules_disable_output/Fishpig_Wordpress');
+		return Mage::getStoreConfigFlag('wordpress/module/enabled', Mage::helper('wordpress/app')->getStore()->getId())
+			&& !Mage::getStoreConfig('advanced/modules_disable_output/Fishpig_Wordpress', Mage::helper('wordpress/app')->getStore()->getId());
 	}
 	
 	/**
@@ -197,30 +217,9 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 	 */
 	public function isPluginEnabled($name)
 	{
-		$name = Mage::getSingleton('catalog/product_url')->formatUrlKey($name);
-		$plugins = array();
-
-		if ($plugins = $this->getWpOption('active_plugins')) {
-			$plugins = unserialize($plugins);
-		}
-		
-		if ($this->isWordPressMU() && Mage::helper('wpmultisite')->canRun()) {
-			if ($networkPlugins = Mage::helper('wpmultisite')->getWpSiteOption('active_sitewide_plugins')) {
-				$plugins += (array)unserialize($networkPlugins);
-			}
-		}
-
-		if ($plugins) {
-			foreach($plugins as $a => $b) {
-				if (strpos($a . '-' . $b, $name) !== false) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return Mage::helper('wordpress/plugin')->isEnabled($name);
 	}
-
+	
 	/**
 	 * Determine whether to force single store
 	 *
@@ -228,7 +227,7 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 	 */
 	public function forceSingleStore()
 	{
-		return Mage::getStoreConfigFlag('wordpress/integration/force_single_store');
+		return Mage::getStoreConfigFlag('wordpress/integration/force_single_store', Mage::helper('wordpress/app')->getStore()->getId());
 	}
 	
 	/**
@@ -242,7 +241,7 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 			$this->_cache('is_wpmu', false);
 			
 			if ($this->isWordPressMUInstalled()) {
-				$this->_cache('is_wpmu', Mage::helper('wpmultisite')->canRun());
+				$this->_cache('is_wpmu', Mage::helper('wp_addon_multisite')->canRun());
 			}
 		}
 		
@@ -257,21 +256,12 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 	public function isWordPressMUInstalled()
 	{
 		if (!$this->_isCached('is_wpmu_installed')) {
-			$modules = (array)Mage::getConfig()->getNode('modules')->children();
+			$config = Mage::getConfig();
 
-			if (isset($modules['Fishpig_WordpressMu'])) {
-				$module = (array)$modules['Fishpig_WordpressMu'];
-
-				$this->_cache('is_wpmu_installed', ($module['active'] == 'true' || $module['active'] === true));
-			}
-			else if (isset($modules['Fishpig_Wordpress_Addon_Multisite'])) {
-				$module = (array)$modules['Fishpig_Wordpress_Addon_Multisite'];
-
-				$this->_cache('is_wpmu_installed', ($module['active'] == 'true' || $module['active'] === true));
-			}
-			else {
-				$this->_cache('is_wpmu_installed', false);
-			}
+			$isInstalled = (string)$config->getNode('modules/Fishpig_Wordpress_Addon_Multisite/active') === 'true'
+				|| (string)$config->getNode('modules/Fishpig_WordpressMu/active') === 'true';
+				
+			$this->_cache('is_wpmu_installed', $isInstalled);
 		}
 		
 		return $this->_cached('is_wpmu_installed');
@@ -290,7 +280,9 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 			foreach(array('upload_url_path', 'upload_path') as $config) {
 				if ($value = $this->getWpOption($config)) {
 					if (strpos($value, 'http') === false) {
-						$url = $this->getBaseUrl($value);
+						if (substr($value, 0, 1) !== '/') {
+							$url = $this->getBaseUrl($value);
+						}
 					}
 					else {
 						$url = $value;
@@ -346,7 +338,7 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 	 */
 	public function getRawWordPressPath()
 	{
-		$path = rtrim($this->getConfigValue('wordpress/integration/path'), DS);
+		$path = rtrim(Mage::getStoreConfig('wordpress/integration/path', Mage::helper('wordpress/app')->getStore()->getId()), DS);
 
 		if ($path === '') {
 			return false;
@@ -375,22 +367,32 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 	}
 	
 	/**
-	 * Apply Legacy Hacks
+	 * Provides backwards compatibility for older Magento versions running Legacy
 	 *
-	 * @return $this
+	 * @param string $data
+	 * @param array $allowedTags = null
+	 * @return string
 	 */
-	public function applyLegacyHacks()
+	public function escapeHtml($data, $allowedTags = null)
 	{
-		if (!Mage::registry('wordpress_legacy_hacks')) {
-			Mage::register('wordpress_legacy_hacks', true);
-
-			$version = Mage::getVersion();
+		return Mage::helper('core')->htmlEscape($data, $allowedTags);
+	}
 	
-			if (version_compare($version, '1.6.0.0', '<') && version_compare($version, '1.3.0.0', '>')) {
-				require_once(dirname(dirname(__FILE__)) . DS . 'legacy.php');
-			}
+	/**
+	 * Determine wether the Legacy add-on is installed
+	 *
+	 * @return bool
+	 */
+	public function isLegacy()
+	{
+		if ($this->_isCached('is_legacy')) {
+			return $this->_cached('is_legacy');
 		}
 		
-		return $this;
+		$isLegacy = is_file(Mage::getBaseDir() . DS . 'app' . DS . 'etc' . DS . 'modules' . DS . 'Fishpig_Wordpress_Addon_Legacy.xml');
+		
+		$this->_cache('is_legacy', $isLegacy);
+		
+		return $isLegacy;
 	}
 }

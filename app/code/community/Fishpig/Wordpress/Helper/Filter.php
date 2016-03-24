@@ -12,7 +12,7 @@ class Fishpig_Wordpress_Helper_Filter extends Fishpig_Wordpress_Helper_Abstract
 	 * Applies a set of filters to the given string
 	 *
 	 * @param string $content
-	 * @param Fishpig_Wordpress_Model_Post_Abstract $object
+	 * @param Fishpig_Wordpress_Model_Post $object
 	 * @param string $context
 	 * @return string
 	 */
@@ -26,17 +26,17 @@ class Fishpig_Wordpress_Helper_Filter extends Fishpig_Wordpress_Helper_Abstract
 		
 		$content = $contentObj->getContent();
 
+		if (Mage::getStoreConfigFlag('wordpress/misc/autop')) {
+			$content = $this->addParagraphsToString($content);
+		}
+		
 		$this->_applyShortcodes($content, $object, $context);
 		$this->_addMagentoFilters($content);
-
-		if (Mage::getStoreConfigFlag('wordpress/misc/autop')) {
-			$this->_addParagraphsToString($content);
-		}
 		
 		$contentObj = new Varien_Object(array('content' => $content));
 				
 		Mage::dispatchEvent('wordpress_string_filter_after', array('content' => $contentObj, 'object' => $object, 'context' => $context, 'helper' => $this));
-		
+
 		$content = $contentObj->getContent();
 	
 		return $content;
@@ -46,7 +46,7 @@ class Fishpig_Wordpress_Helper_Filter extends Fishpig_Wordpress_Helper_Abstract
 	 * Apply shortcodes to the content
 	 *
 	 * @param string &$content
-	 * @param Fishpig_Wordpress_Model_Post_Abstract $object
+	 * @param Fishpig_Wordpress_Model_Post $post
 	 */
 	protected function _applyShortcodes(&$content, $object, $context)
 	{
@@ -59,6 +59,7 @@ class Fishpig_Wordpress_Helper_Filter extends Fishpig_Wordpress_Helper_Abstract
 		Mage::helper('wordpress/shortcode_product')->apply($content, $object);
 		Mage::helper('wordpress/shortcode_caption')->apply($content, $object);
 		Mage::helper('wordpress/shortcode_gallery')->apply($content, $object);
+		Mage::helper('wordpress/shortcode_spotify')->apply($content, $object);
 		Mage::helper('wordpress/shortcode_code')->apply($content, $object);
 		Mage::helper('wordpress/shortcode_associatedProducts')->apply($content, $object);
 		
@@ -88,44 +89,35 @@ class Fishpig_Wordpress_Helper_Filter extends Fishpig_Wordpress_Helper_Abstract
 	 * Taken from the WordPress core
 	 * Long live open source!
 	 *
-	 * @param string &$content
+	 * @param string $content
 	 */
-	protected function _addParagraphsToString(&$content)
+	public function addParagraphsToString($content)
 	{
-		$pee = $content;
-
-		$br = true;
-		$pre_tags = array();
-	
-		if ( trim($pee) === '' )
-			return '';
-	
-		$pee = $pee . "\n"; // just to make things a little easier, pad the end
-	
-		if ( strpos($pee, '<pre') !== false ) {
-			$pee_parts = explode( '</pre>', $pee );
-			$last_pee = array_pop($pee_parts);
-			$pee = '';
-			$i = 0;
-	
-			foreach ( $pee_parts as $pee_part ) {
-				$start = strpos($pee_part, '<pre');
-	
-				// Malformed html?
-				if ( $start === false ) {
-					$pee .= $pee_part;
-					continue;
-				}
-	
-				$name = "<pre wp-pre-tag-$i></pre>";
-				$pre_tags[$name] = substr( $pee_part, $start ) . '</pre>';
-	
-				$pee .= substr( $pee_part, 0, $start ) . $name;
-				$i++;
-			}
-	
-			$pee .= $last_pee;
+		if (function_exists('wpautop')) {
+			return wpautop($content);
 		}
+
+		$protectedTags = array(
+			'script',
+			'style',
+			'pre',
+			'textarea',
+		);
+		
+		$safe = array();
+		
+		foreach($protectedTags as $tag) {
+			if (strpos($content, '<' . $tag) !== false) {
+				if (preg_match_all('/(<' . $tag . '.*<\/' . $tag . '>)/siU', $content, $matches)) {
+					foreach($matches[1] as $match) {
+						$safe[] = $match;
+						$content = str_replace($match, '<!--KEY' . (count($safe)-1) . '-->', $content);
+					}
+				}
+			}
+		}
+
+		$pee = str_replace("\n", ' ', $content) . "\n";
 	
 		$pee = preg_replace('|<br />\s*<br />|', "\n\n", $pee);
 		// Space things out a little
@@ -138,11 +130,20 @@ class Fishpig_Wordpress_Helper_Filter extends Fishpig_Wordpress_Helper_Abstract
 			$pee = preg_replace('|\s*</embed>\s*|', '</embed>', $pee);
 		}
 		$pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
+
 		// make paragraphs, including one at the end
 		$pees = preg_split('/\n\s*\n/', $pee, -1, PREG_SPLIT_NO_EMPTY);
 		$pee = '';
-		foreach ( $pees as $tinkle )
-			$pee .= '<p>' . trim($tinkle, "\n") . "</p>\n";
+
+		foreach ( $pees as $tinkle ) {
+			if (trim(strip_tags(trim($tinkle))) !== '') {
+				$pee .= '<p>' . trim($tinkle, "\n") . "</p>\n";
+			}
+			else {
+				$pee .= $tinkle . "\n";
+			}
+		}
+
 		$pee = preg_replace('|<p>\s*</p>|', '', $pee); // under certain strange conditions it could create a P of entirely whitespace
 		$pee = preg_replace('!<p>([^<]+)</(div|address|form)>!', "<p>$1</p></$2>", $pee);
 		$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee); // don't pee all over a tag
@@ -151,18 +152,11 @@ class Fishpig_Wordpress_Helper_Filter extends Fishpig_Wordpress_Helper_Abstract
 		$pee = str_replace('</blockquote></p>', '</p></blockquote>', $pee);
 		$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)!', "$1", $pee);
 		$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee);
-		if ( $br ) {
-			$pee = preg_replace_callback('/<(script|style).*?<\/\\1>/s', array($this, '_preserveNewLines'), $pee);
-			$pee = preg_replace('|(?<!<br />)\s*\n|', "<br />\n", $pee); // optionally make line breaks
-			$pee = str_replace('<WPPreserveNewline />', "\n", $pee);
-		}
+
 		$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*<br />!', "$1", $pee);
 		$pee = preg_replace('!<br />(\s*</?(?:p|li|div|dl|dd|dt|th|pre|td|ul|ol)[^>]*>)!', '$1', $pee);
 		$pee = preg_replace( "|\n</p>$|", '</p>', $pee );
 	
-		if ( !empty($pre_tags) )
-			$pee = str_replace(array_keys($pre_tags), array_values($pre_tags), $pee);
-		
 		foreach(array('script', 'style') as $tag) {
 			$pee = str_replace(array('<p><' . $tag, '</' . $tag . '></p>'), array('<' . $tag, '</' . $tag . '>'), $pee);
 		}
@@ -170,6 +164,12 @@ class Fishpig_Wordpress_Helper_Filter extends Fishpig_Wordpress_Helper_Abstract
 		$pee = str_replace(array('<p>[', ']</p>'), array('[', ']'), $pee);
 
 		$content = $pee;
+
+		foreach($safe as $key => $value) {
+			$content = str_replace('<!--KEY' . $key . '-->', $value, $content);
+		}
+
+		return $content;
 	}
 
 	/**

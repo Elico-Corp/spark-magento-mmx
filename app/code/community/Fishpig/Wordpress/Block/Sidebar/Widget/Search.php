@@ -39,4 +39,18 @@ class Fishpig_Wordpress_Block_Sidebar_Widget_Search extends Fishpig_Wordpress_Bl
 	{
 		return $this->helper('wordpress/router')->getSearchTerm();
 	}
+	
+	/**
+	 * Ensure template is set
+	 *
+	 * @return string
+	 */
+	protected function _beforeToHtml()
+	{
+		if (!$this->getTemplate()) {
+			$this->setTemplate('wordpress/sidebar/widget/search.phtml');
+		}
+		
+		return parent::_beforeToHtml();
+	}
 }

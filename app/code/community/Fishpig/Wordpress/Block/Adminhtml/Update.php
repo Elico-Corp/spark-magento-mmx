@@ -39,30 +39,21 @@ class Fishpig_Wordpress_Block_Adminhtml_Update extends Mage_Core_Block_Text
 	 */
 	protected function _beforeToHtml()
 	{
-		$this->setText(
-			sprintf("<script type=\"text/javascript\">new fishpig.WP.Update('%s', '%s');</script>", $this->_getSourceUrl(), $this->_getVersion())
-		);
-
+		if (Mage::getStoreConfigFlag('wordpress/module/check_for_updates')) {
+			$current = str_replace('.', '_', Mage::helper('wordpress/system')->getExtensionVersion());
+	
+			$text = implode('', array(
+				'<script type="text/javascript">',
+					sprintf("var WP_VERSION_LATEST = '%s';", $latestVersion = Mage::app()->getCache()->load('wordpress_integration_update' . $current)),
+					sprintf("var WP_VERSION_CURRENT = '%s';", Mage::helper('wordpress/system')->getExtensionVersion()),
+					sprintf("var WP_VERSION_LOOKUP_URL = '%s';", $this->getUrl('adminhtml/wordpress/checkVersion')),
+					'new fishpig.WP.Update();',
+				'</script>',
+			));
+			
+			$this->setText($text);
+		}
+		
 		return parent::_beforeToHtml();
-	}
-	
-	/**
-	 * Retrieve the source URL
-	 *
-	 * @return string
-	 */
-	protected function _getSourceUrl()
-	{
-		return $this->getUrl('adminhtml/wordpress/checkVersion');
-	}
-	
-	/**
-	 * Retrieve the curernt version of the extension
-	 *
-	 * @return string
-	 */
-	protected function _getVersion()
-	{
-		return Mage::helper('wordpress/system')->getExtensionVersion();
 	}
 }

@@ -17,8 +17,14 @@ class Fishpig_Wordpress_Block_Search_Result extends Fishpig_Wordpress_Block_Post
 	{
 		if (is_null($this->_postCollection)) {
 			$this->_postCollection = parent::_getPostCollection()
-				->addPostTypeFilter(array('post', 'page'))
-				->addSearchStringFilter($this->_getParsedSearchString(), array('post_title', 'post_excerpt', 'post_content'));
+				->addSearchStringFilter($this->_getParsedSearchString(), array('post_title', 'post_content'));
+				
+			if ($postTypes = $this->getRequest()->getParam('post_type')) {
+				$this->_postCollection->addPostTypeFilter($postTypes);
+			}
+			else {
+				$this->_postCollection->addPostTypeFilter(array('post', 'page'));
+			}
 		}
 		
 		return $this->_postCollection;
@@ -55,7 +61,7 @@ class Fishpig_Wordpress_Block_Search_Result extends Fishpig_Wordpress_Block_Post
 	 */
 	public function getSearchTerm($escape = false)
 	{
-		return $this->helper('wordpress/router')->getSearchTerm($escape, $this->getSearchVar());
+		return urldecode($this->helper('wordpress/router')->getSearchTerm($escape, $this->getSearchVar()));
 	}
 	
 	/**

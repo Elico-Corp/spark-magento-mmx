@@ -9,6 +9,13 @@
 class Fishpig_Wordpress_TermController extends Fishpig_Wordpress_Controller_Abstract
 {
 	/**
+	 * Blocks used to generate RSS feed items
+	 *
+	 * @var string
+	 */
+	 protected $_feedBlock = 'term_view';
+	 
+	/**
 	 * Used to do things en-masse
 	 * eg. include canonical URL
 	 *
@@ -29,13 +36,7 @@ class Fishpig_Wordpress_TermController extends Fishpig_Wordpress_Controller_Abst
 	{
 		parent::preDispatch();
 		
-		$term = $this->_initTerm();
-		
-		if ($term->isDefaultTerm()) {
-			$this->_forceForwardViaException('noRoute');
-			return false;
-		}
-		
+		$term = $this->_initTerm();		
 
 		return $this;	
 	}
@@ -49,20 +50,31 @@ class Fishpig_Wordpress_TermController extends Fishpig_Wordpress_Controller_Abst
 		$term = Mage::registry('wordpress_term');
 		
 		$this->_addCustomLayoutHandles(array(
-			'wordpress_term_view',
-			'wordpress_term_index',
-			'wordpress_term',
 			'wordpress_post_list',
+			'wordpress_term_view',
+			'wordpress_post_' . $term->getTaxonomyType() . '_view',  // Legacy
+			'wordpress_' . $term->getTaxonomyType() . '_view',
+			'wordpress_' . $term->getTaxonomyType() . '_' . $term->getId(), // Legacy
+			'wordpress_' . $term->getTaxonomyType() . '_view_' . $term->getId(),
 		));
-			
-		$this->_initLayout();
 
-		$this->_rootTemplates[] = 'post_list';
+		$this->_initLayout();
 		
-		$this->_title($term->getName());
+		$tree = array($term);
+		$buffer = $term;
 		
-		$this->addCrumb('term_taxonomy', array('label' => $term->getTaxonomyLabel()));
-		$this->addCrumb('term', array('label' => $term->getName()));
+		while($buffer = $buffer->getParentTerm()) {
+			array_unshift($tree, $buffer);
+		}
+		
+		while($branch = array_shift($tree)) {
+			$this->addCrumb('term_' . $branch->getId(), array(
+				'link' => ($tree ? $branch->getUrl() : null), 
+				'label' => $branch->getName())
+			);
+
+			$this->_title($branch->getName());
+		}
 		
 		$this->renderLayout();
 	}
@@ -79,6 +91,16 @@ class Fishpig_Wordpress_TermController extends Fishpig_Wordpress_Controller_Abst
 			return $term;
 		}
 
-		return false;
+		$term = Mage::getModel('wordpress/term')
+			->setTaxonomy($this->getRequest()->getParam('taxonomy'))
+			->load($this->getRequest()->getParam('id'));
+
+		if (!$term->getId()) {
+			return false;
+		}
+		
+		Mage::register('wordpress_term', $term);
+
+		return $term;
 	}
 }

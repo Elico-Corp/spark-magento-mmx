@@ -7,8 +7,6 @@
  * @info			http://fishpig.co.uk/wordpress-integration.html
  */
 
-Mage::helper('wordpress')->applyLegacyHacks();
-
 abstract class Fishpig_Wordpress_Model_Resource_Abstract extends Mage_Core_Model_Resource_Db_Abstract
 {
 	/**
@@ -18,7 +16,7 @@ abstract class Fishpig_Wordpress_Model_Resource_Abstract extends Mage_Core_Model
 	 */
 	protected function _getReadAdapter()
 	{
-		return Mage::helper('wordpress/database')->getReadAdapter();
+		return Mage::helper('wordpress/app')->getDbConnection();
 	}
 
 	/**
@@ -28,7 +26,7 @@ abstract class Fishpig_Wordpress_Model_Resource_Abstract extends Mage_Core_Model
 	 */	
 	protected function _getWriteAdapter()
 	{
-		return Mage::helper('wordpress/database')->getWriteAdapter();
+		return Mage::helper('wordpress/app')->getDbConnection();
 	}
 	
 	/**
@@ -51,7 +49,7 @@ abstract class Fishpig_Wordpress_Model_Resource_Abstract extends Mage_Core_Model
 				->where('meta_key=?', $metaKey)
 				->limit(1);
 
-			if(($value = $this->_getReadAdapter()->fetchOne($select)) !== false) {
+			if (($value = $this->_getReadAdapter()->fetchOne($select)) !== false) {
 				return trim($value);
 			}
 			
@@ -86,5 +84,27 @@ abstract class Fishpig_Wordpress_Model_Resource_Abstract extends Mage_Core_Model
 				$this->_getWriteAdapter()->insert($object->getMetaTable(), $metaData);
 			}
 		}
+	}
+	
+	/**
+	 * Get an array of all of the meta values associated with this post
+	 *
+	 * @param Fishpig_Wordpress_Model_Meta_Abstract $object
+	 * @return false|array
+	 */
+	public function getAllMetaValues(Fishpig_Wordpress_Model_Meta_Abstract $object)
+	{
+		if ($object->hasMeta()) {
+			$select = $this->_getReadAdapter()
+				->select()
+				->from($object->getMetaTable(), array('meta_key', 'meta_value'))
+				->where($object->getMetaObjectField() . '=?', $object->getId());
+
+			if (($values = $this->_getReadAdapter()->fetchPairs($select)) !== false) {
+				return $values;
+			}
+		}
+		
+		return false;
 	}
 }

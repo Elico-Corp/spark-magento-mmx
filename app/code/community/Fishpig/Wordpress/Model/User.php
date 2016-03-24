@@ -58,7 +58,11 @@ class Fishpig_Wordpress_Model_User extends Fishpig_Wordpress_Model_Abstract
 	 */
 	public function getUrl()
 	{
-		return Mage::helper('wordpress')->getUrl('author/' . urlencode($this->getUserNicename())) . '/';
+		if (!$this->hasUrl()) {
+			$this->setUrl(Mage::helper('wordpress')->getUrl('author/' . urlencode($this->getUserNicename())) . '/');
+		}
+		
+		return $this->_getData('url');
 	}
 
 	/**
@@ -79,11 +83,7 @@ class Fishpig_Wordpress_Model_User extends Fishpig_Wordpress_Model_Abstract
 	 */
 	public function getTablePrefix()
 	{
-		if (!$this->hasTablePrefix()) {
-			$this->setTablePrefix(Mage::helper('wordpress/database')->getTablePrefix());
-		}
-		
-		return $this->_getData('table_prefix');
+		return Mage::helper('wordpress/app')->getTablePrefix();
 	}
 	
 	/**

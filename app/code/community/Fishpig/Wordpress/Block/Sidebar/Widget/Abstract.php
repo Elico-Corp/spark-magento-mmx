@@ -6,7 +6,7 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 
-abstract class Fishpig_Wordpress_Block_Sidebar_Widget_Abstract extends Mage_Core_Block_Template
+abstract class Fishpig_Wordpress_Block_Sidebar_Widget_Abstract extends Fishpig_Wordpress_Block_Abstract
 {
 	/**
 	 * Retrieve the default title for the block

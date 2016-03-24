@@ -8,6 +8,13 @@
 
 class Fishpig_Wordpress_Model_Resource_Term extends Fishpig_Wordpress_Model_Resource_Abstract
 {
+	/**
+	 * Determine whether there is a term order field
+	 *
+	 * @static bool
+	 */
+	protected static $_tableHasTermOrder = null;
+	
 	public function _construct()
 	{
 		$this->_init('wordpress/term', 'term_id');
@@ -46,45 +53,51 @@ class Fishpig_Wordpress_Model_Resource_Term extends Fishpig_Wordpress_Model_Reso
 	}
 	
 	/**
-	 * Loads a category by an array of slugs
-	 * The array should be the order of slugs found in the URI
-	 * The whole slug array must match (including parent relationsips)
+	 * Determine whether a 'term_order' field is present
 	 *
-	 * @param array $slugs
-	 * @param Fishpig_Wordpress_Model_Term $object
-	 * @return false
+	 * @return bool
 	 */
-	public function loadBySlugs(array $slugs, Fishpig_Wordpress_Model_Term $object)
+	public function tableHasTermOrderField()
 	{
-		$slugs = array_reverse($slugs);
-		$primarySlug = array_shift($slugs);
-
-		try {
-			$object->loadBySlug($primarySlug);
-			
-			if ($object->getId()) {
-				$category = $object;
-				
-				foreach($slugs as $slug) {
-					$parent = Mage::getModel($object->getResourceName())->loadBySlug($slug);
-					
-					if ($parent->getId() !== $category->getParent()) {
-						throw new Exception('This path just ain\'t right, bro!');
-					}
-					
-					$category->setParentTerm($parent);
-					$category = $parent;
-				}
-
-				if (!$category->getParentId()) {
-					return true;
-				}
-			}
+		if (!is_null(self::$_tableHasTermOrder)) {
+			return self::$_tableHasTermOrder;
 		}
-		catch (Exception $e) {}
+		
+		try {
+			self::$_tableHasTermOrder = $this->_getReadAdapter()
+				->fetchOne('SHOW COLUMNS FROM ' . $this->getMainTable() . ' WHERE Field = \'term_order\'')
+				!== false;
+		}
+		catch (Exception $e) {
+			self::$_tableHasTermOrder = false;
+		}
+		
+		return self::$_tableHasTermOrder;
+	}
 	
-		$object->setData(array())->setId(null);
-
-		return false;
+	/**
+	 * Get all child ID's for a parent
+	 * This includes recursive levels
+	 *
+	 * @param int $parentId
+	 * @return array
+	 */
+	public function getChildIds($parentId)
+	{
+		$select = $this->_getReadAdapter()
+			->select()
+				->from($this->getTable('wordpress/term_taxonomy'), 'term_id')
+				->where('parent=?', $parentId)
+				->where('count>?', 0);
+		
+		if ($termIds = $this->_getReadAdapter()->fetchCol($select)) {
+			foreach($termIds as $key => $termId) {
+				$termIds = array_merge($termIds, $this->getChildIds($termId));
+			}
+			
+			return array_merge(array($parentId), $termIds);
+		}
+		
+		return array($parentId);
 	}
 }

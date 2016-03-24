@@ -47,6 +47,67 @@ abstract class Fishpig_Wordpress_Model_Abstract extends Mage_Core_Model_Abstract
 	protected $_metaKeysChanged = array();
 
 	/**
+	 * Cache for objects to avoid re-use
+	 *
+	 * @var array (static)
+	 */
+	static $_objectCache = array();
+	
+	/**
+	 * Override load method to provide object cache
+	 *
+	 * @param mixed $id
+	 * @param string $field = null
+	 * @return $this
+	 */
+	public function load($id, $field=null)
+	{
+		if (!is_null($field)) {
+			$id = $this->_encodeLoadingValue($id, $field);
+		}
+
+		if ($this->getSkipObjectCache()) {
+			return parent::load($id, $field);
+		}
+
+		$class = get_class($this);
+		
+		if ($this->getPostType()) {
+			$class = '::' . $this->getPostType();
+		}
+
+		if (!isset(self::$_objectCache[$class])) {
+			self::$_objectCache[$class] = array();
+		}
+
+		if (is_null($field) && isset(self::$_objectCache[$class][$id])) {
+			return self::$_objectCache[$class][$id];
+		}
+
+		parent::load($id, $field);
+		
+		if ($this->getId()) {
+			self::$_objectCache[$class][$id] = $this;
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Encode the loading value
+	 *
+	 * @param mixed $value
+	 * @param string $field
+	 * @return string
+	 */
+	protected function _encodeLoadingValue($value, $field)
+	{
+		return strpos($field, 'email') === false
+			? urlencode($value)
+			: $value;
+	}
+
+	/**
 	 * Retrieve the name of the meta database table
 	 *
 	 * @return false|string
@@ -106,7 +167,7 @@ abstract class Fishpig_Wordpress_Model_Abstract extends Mage_Core_Model_Abstract
 					'key' => $key,
 					'value' => $value,
 				));
-				
+
 				Mage::dispatchEvent($this->_eventPrefix . '_get_meta_value', array('object' => $this, $this->_eventObject => $this, 'meta' => $meta));
 				
 				$this->_meta[$key] = $meta->getValue();
@@ -116,6 +177,18 @@ abstract class Fishpig_Wordpress_Model_Abstract extends Mage_Core_Model_Abstract
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Get an array of all of the meta values associated with this post
+	 *
+	 * @return false|array
+	 */
+	public function getAllMetaValues()
+	{
+		return $this->hasMeta()
+			? $this->getResource()->getAllMetaValues($this)
+			: false;
 	}
 	
 	/**
@@ -182,7 +255,7 @@ abstract class Fishpig_Wordpress_Model_Abstract extends Mage_Core_Model_Abstract
 	protected function _getRealMetaKey($key)
 	{
 		if ($this->_metaHasPrefix) {
-			$tablePrefix = Mage::helper('wordpress/database')->getTablePrefix();
+			$tablePrefix = Mage::helper('wordpress/app')->getTablePrefix();
 
 			if ($tablePrefix !== 'wp_') {
 				if (preg_match('/^(wp_)(.*)$/', $key, $matches)) {
@@ -236,5 +309,16 @@ abstract class Fishpig_Wordpress_Model_Abstract extends Mage_Core_Model_Abstract
 	public function getEventObject()
 	{
 		return $this->_eventObject;
+	}
+	
+	/**
+	 * Get a collection of posts
+	 * Child class should filter posts accordingly
+	 *
+	 * @return Fishpig_Wordpress_Model_Resource_Post_Collection
+	 */
+	public function getPostCollection()
+	{
+		return Mage::getResourceModel('wordpress/post_collection')->setFlag('source', $this);
 	}
 }

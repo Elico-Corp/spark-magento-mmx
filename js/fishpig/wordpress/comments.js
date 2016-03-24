@@ -38,6 +38,10 @@ fishpig.WP.Comments.Form = Class.create({
 		}
 	},
 	submit: function(event) {
+		if (typeof Recaptcha != 'undefined') {
+			$('recaptcha_response_field').addClassName('required-entry');
+		}
+		
 		if(this.validator && this.validator.validate()){
 			if (this.loading) {
 				this.loading.setStyle({'display': 'block'});
@@ -67,9 +71,9 @@ fishpig.WP.Comments.Form = Class.create({
 	},
 	iframeOnLoad: function(event) {
 		var url = this.ifm.contentWindow.location.href;
-		
+
 		if (url.indexOf('#') > 0) {
-			var commentId = url.substring(url.indexOf('#comment-')+"#comment-".length+1);
+			var commentId = url.substring(url.indexOf('#comment-')+9);
 
 			if (this.permalink) {
 				window.location.href = this.permalink + '?comment=' + commentId;

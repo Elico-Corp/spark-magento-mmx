@@ -5,29 +5,49 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 
+
 var 	fishpig 		= fishpig 			|| {};
 		fishpig.WP 	= fishpig.WP 	|| {};
 
 fishpig.WP.Update = new Class.create({
-	initialize: function(sourceUrl, currentVersion) {
+	initialize: function() {
+		if (!WP_VERSION_LATEST) {
+			try {
+				this.loadLatestVersion();
+			}
+			catch (e) {}
+		}
+		else {
+			this.checkUpdate();
+		}
+	},
+	loadLatestVersion: function() {
 		this.ifm = new Element('iframe', {
 			'id': 'wp-int-upgrade-frame',
 			'style': 'display: none;',
-			'src': sourceUrl
+			'src': WP_VERSION_LOOKUP_URL
 		});
 
 		$(document.body).insert(this.ifm);
 
 		this.ifm.observe('load', function(event) {
-			var versions = (this.ifm.contentDocument || this.ifm.contentWindow.document)
-				.getElementsByTagName('v');
-				
-			if (versions.length > 0) {
-				if (this.versionCompare(versions[versions.length-1].innerHTML.trim(), currentVersion) === 1) {
-					this.highlightNewVersion(versions[versions.length-1].innerHTML.trim());
-				}
+			var versions = (this.ifm.contentDocument || this.ifm.contentWindow.document).getElementsByTagName('body')[0].getElementsByTagName('pre')[0].innerHTML;
+
+			var json = versions.evalJSON(true);
+			
+			if (json.latest_version) {
+				WP_VERSION_LATEST = json.latest_version;
 			}
+			
+			this.checkUpdate();
 		}.bindAsEventListener(this));
+	},
+	checkUpdate: function() {
+		if (WP_VERSION_LATEST && WP_VERSION_CURRENT) {
+			if (this.versionCompare(WP_VERSION_LATEST, WP_VERSION_CURRENT) === 1) {
+				this.highlightNewVersion(WP_VERSION_LATEST);
+			}
+		}
 	},
 	highlightNewVersion: function(newVersion) {
 		$('nav').select('a').each(function(elem) {
@@ -40,13 +60,7 @@ fishpig.WP.Update = new Class.create({
 		
 		if (version) {
 			version.update(newVersion);
-			version.up('tr').show();
-			
-			var intSuccess = $('wp-int-success');
-			
-			if (intSuccess) {
-				intSuccess.up('tr').hide();
-			}
+			version.up('.wp-update-msg').show();
 		}
 	},
 	versionCompare: function(left, right) {

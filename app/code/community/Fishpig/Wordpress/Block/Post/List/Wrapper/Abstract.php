@@ -6,7 +6,7 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 
-abstract class Fishpig_Wordpress_Block_Post_List_Wrapper_Abstract extends Mage_Core_Block_Template
+abstract class Fishpig_Wordpress_Block_Post_List_Wrapper_Abstract extends Fishpig_Wordpress_Block_Abstract
 {	
 	/**
 	 * Returns the collection of posts
@@ -16,22 +16,17 @@ abstract class Fishpig_Wordpress_Block_Post_List_Wrapper_Abstract extends Mage_C
 	public function getPostCollection()
 	{
 		if (!$this->hasPostCollection()  && ($collection = $this->_getPostCollection()) !== false) {
-			$this->setPostCollection(
-				$collection->addStatusFilter('publish')->addOrder('post_date', 'desc')
-			);
+			$collection->addIsViewableFilter()->addOrder('post_date', 'desc');
 			
-			$collection->setFlag('after_load_event_name', 
-				$this->_getPostCollectionEventName() . '_after_load'
-			);
+			$this->setPostCollection($collection);
 			
-			$collection->setFlag('after_load_event_block', 
-				$this
-			);
-			
+			$collection->setFlag('after_load_event_name', $this->_getPostCollectionEventName() . '_after_load');
+			$collection->setFlag('after_load_event_block', $this);
+
 			Mage::dispatchEvent('wordpress_post_collection_before_load', array('block' => $this, 'collection' => $collection));
 			Mage::dispatchEvent($this->_getPostCollectionEventName() . '_before_load', array('block' => $this, 'collection' => $collection));
 		}
-		
+
 		return $this->_getData('post_collection');
 	}
 	

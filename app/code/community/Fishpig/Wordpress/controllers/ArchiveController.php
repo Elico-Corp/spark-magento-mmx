@@ -35,14 +35,11 @@ class Fishpig_Wordpress_ArchiveController extends Fishpig_Wordpress_Controller_A
 		$archive = Mage::registry('wordpress_archive');
 		
 		$this->_addCustomLayoutHandles(array(
-			'wordpress_archive_view',
 			'wordpress_post_list',
-			'wordpress_term',
+			'wordpress_archive_view',
 		));
 			
 		$this->_initLayout();
-
-		$this->_rootTemplates[] = 'post_list';
 
 		$this->_title($archive->getName());
 		$this->addCrumb('archive_label', array('label' => $this->__('Archives')));
@@ -61,10 +58,18 @@ class Fishpig_Wordpress_ArchiveController extends Fishpig_Wordpress_Controller_A
 		if (($archive = Mage::registry('wordpress_archive')) !== null) {
 			return $archive;
 		}
+
+		$date = trim(implode('/', array(
+			$this->getRequest()->getParam('year'),
+			$this->getRequest()->getParam('month'),
+			$this->getRequest()->getParam('day'),
+		)), '/');
+
 		
-		if ($archive = Mage::getModel('wordpress/archive')->load(Mage::helper('wordpress/router')->getBlogUri())) {
+		if ($archive = Mage::getModel('wordpress/archive')->load($date)) {
 			if ($archive->hasPosts()) {
 				Mage::register('wordpress_archive', $archive);
+
 				return $archive;
 			}
 		}

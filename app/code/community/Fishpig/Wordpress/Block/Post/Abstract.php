@@ -6,7 +6,7 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 
-abstract class Fishpig_Wordpress_Block_Post_Abstract extends Mage_Core_Block_Template
+abstract class Fishpig_Wordpress_Block_Post_Abstract extends Fishpig_Wordpress_Block_Abstract
 {
 	/**
 	 * Retrieve the current post object
@@ -18,6 +18,16 @@ abstract class Fishpig_Wordpress_Block_Post_Abstract extends Mage_Core_Block_Tem
 		return $this->hasPost() ? $this->_getData('post') : Mage::registry('wordpress_post');
 	}
 
+	/**
+	 * Legacy function so that old templates continue to work
+	 *
+	 * @return Fishpig_Wordpress_Model_Post
+	 */
+	public function getPage()
+	{
+		return $this->getPost();
+	}
+	
 	/**
 	 * Returns the ID of the currently loaded post
 	 *
@@ -55,10 +65,14 @@ abstract class Fishpig_Wordpress_Block_Post_Abstract extends Mage_Core_Block_Tem
 	 * @param Fishpig_Wordpress_Model_Post $post
 	 * @return string
 	 */
-	public function getPasswordProtectHtml($post)
+	public function getPasswordProtectHtml($post = null)
 	{
+		if (is_null($post)) {
+			$post = $this->getPost();
+		}
+
 		return $this->getLayout()
-			->createBlock('core/template')
+			->createBlock('wordpress/template')
 			->setTemplate('wordpress/protected.phtml')
 			->setEntityType('post')
 			->setPost($post)
@@ -92,10 +106,10 @@ abstract class Fishpig_Wordpress_Block_Post_Abstract extends Mage_Core_Block_Tem
 	/**
 	 * Set the post as the current post in all child blocks
 	 *
-	 * @param Fishpig_Wordpress_Model_Post_Abstract $post
+	 * @param Fishpig_Wordpress_Model_Post $post
 	 * @return $this
 	 */
-	public function preparePost(Fishpig_Wordpress_Model_Post_Abstract $post)
+	public function preparePost(Fishpig_Wordpress_Model_Post $post)
 	{	
 		if (($rootBlock = $this->_getBlockForPostPrepare()) !== false) {
 			foreach($rootBlock->getChild('') as $alias => $block) {
@@ -160,6 +174,11 @@ abstract class Fishpig_Wordpress_Block_Post_Abstract extends Mage_Core_Block_Tem
 		return '';
 	}
 	
+	/**
+	 * Get the Meta block
+	 *
+	 * @return Fishpig_Wordpress_Block_Post_Meta
+	 */
 	public function getMetaBlock()
 	{
 		if (!$this->hasMetaBlock()) {

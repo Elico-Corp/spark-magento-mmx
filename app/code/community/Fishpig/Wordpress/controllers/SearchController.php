@@ -15,36 +15,38 @@ class Fishpig_Wordpress_SearchController extends Fishpig_Wordpress_Controller_Ab
 	 */
 	public function preDispatch()
 	{
-		if (Mage::helper('wordpress')->isAddonInstalled('IntegratedSearch') && Mage::getStoreConfigFlag('wordpress/integratedsearch/blog')) {
+		if ($this->getRequest()->getParam('redirect_broken_url')) {
+			$this->getResponse()
+				->setRedirect(Mage::helper('wordpress')->getUrl('search/' . $this->getRequest()->getParam('s') . '/'))
+				->sendResponse();
+
+            $this->getRequest()->setDispatched( true );
+		}
+		else if (Mage::helper('wordpress')->isAddonInstalled('IntegratedSearch') && Mage::getStoreConfigFlag('wordpress/integratedsearch/blog')) {
 			$this->_forceForwardViaException('index', 'result', 'catalogsearch', array(
-				'q' => Mage::helper('wordpress/router')->getTrimmedUri('search')
+				'q' => $this->getRequest()->getParam('s'),
 			));
 		}
-		
+
 		return parent::preDispatch();
 	}
 
 	/**
-	  * Initialise the current category
+	  *
+	  *
 	  */
 	public function indexAction()
 	{
-		$this->_rootTemplates[] = 'post_list';
-		
 		$this->_addCustomLayoutHandles(array(
-			'wordpress_search_index',
 			'wordpress_post_list',
+			'wordpress_search_index',
 		));
 		
 		$this->_initLayout();
 
 		$helper = $this->getRouterHelper();
-		
-		if ($searchValue = $helper->getTrimmedUri('search')) {
-			$this->getRequest()->setParam('s', $searchValue);
-		}
 
-		$searchTerm = Mage::helper('core')->escapeHtml($helper->getSearchTerm());
+		$searchTerm = Mage::helper('wordpress')->escapeHtml($helper->getSearchTerm());
 		
 		$this->_title($this->__("Search results for: '%s'", $searchTerm));
 		
