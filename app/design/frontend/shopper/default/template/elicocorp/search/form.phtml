@@ -10,7 +10,7 @@
         <?php echo Mage::app()->getStore(); ?>
         <form id="elico_search">
                 <?php
-            $category = Mage::getModel('catalog/category')->loadByAttribute('url_key', 'search');
+            $category = Mage::getModel('catalog/category')->load(50);
             $category_ids = explode(',', $category->getChildren());
             ?>
                 <div class="input-box">
@@ -45,23 +45,6 @@
             </button>
         </form>
         <script type="text/javascript">
-            function addslashes(str) {
-              //  discuss at: http://phpjs.org/functions/addslashes/
-              // original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-              // improved by: Ates Goral (http://magnetiq.com)
-              // improved by: marrtins
-              // improved by: Nate
-              // improved by: Onno Marsman
-              // improved by: Brett Zamir (http://brett-zamir.me)
-              // improved by: Oskar Larsson Högfeldt (http://oskar-lh.name/)
-              //    input by: Denny Wardhana
-              //   example 1: addslashes("kevin's birthday");
-              //   returns 1: "kevin\\'s birthday"
-
-              return (str + '')
-                .replace(/[\\"']/g, '\\$&')
-                .replace(/\u0000/g, '\\0');
-            }
             jQuery(document).ready(function() {
                     jQuery('<div id="overlay"/>').hide().appendTo('body');
 
@@ -95,7 +78,7 @@
                                 form_data += "&";
                             form_data += jQuery(this).attr('name') + '=' + jQuery(this).val().replace(/ /g, '+');
                         });
-                        jQuery.post('<?php echo Mage::getUrl('search/index/options'); ?>', form_data, function(json) { 
+                        jQuery.post('<?php echo Mage::getUrl('search/index/options', array('_forced_secure' => true)); ?>', form_data, function(json) { 
                             data = jQuery.parseJSON(json);
                             jQuery('.ajax_field').each(function(){ 
                                 var field_name = jQuery(this).attr('name');
@@ -103,12 +86,12 @@
                                 if(jQuery(self).attr('name') == field_name || field_name == 'category') {
                                     return true;
                                 }
-                                options = '<option value="">'+jQuery('#' + field_name).data('default')+'</option>';
+                                options = '<option value="">'+data[field_name]['default']+'</option>';
                                 jQuery.each(data[field_name], function(key, value){
-                                    if(key == "") {
+                                    if(key == "default") {
                                         return true;
 				    }
-                                    options += '<option value="'+addslashes(key)+'">'+value+'</option>';
+                                    options += '<option value="'+key+'">'+value+'</option>';
                                 });
                                 jQuery('#'+ field_name).html(options);
                                 if(jQuery("#"+field_name+" option[value='"+val+"']").length !== 0) {
@@ -206,10 +189,9 @@
                             data += '&p=' + jQuery('.pager .pages li.current a').html();
                         }
 
-                        jQuery.post('<?php echo Mage::getUrl('search/index/list'); ?>', data, function(data) {
+                        jQuery.post('<?php echo Mage::getUrl('search/index/list',  array('_forced_secure' => true)); ?>', data, function(data) {
                             jQuery('#result').html(data);
 			    var driver = jQuery('#x_mmx_driver');
-                // sort driver by last name
 			    var driver_option = driver.children('option[value!=""]');
 			    driver_option.sort(function(a,b){
 					var an = jQuery(a).text().substring(3).toLowerCase();

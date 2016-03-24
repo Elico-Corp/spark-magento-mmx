@@ -1,101 +1,76 @@
 <?php
 $res = array();
-$fields = array(
-    'x_mmx_scale' => array('type' => 'int', 'id' => 148),
-    'custom_manufacturer' => array('type' => 'varchar', 'id' => 143),
-    'x_mmx_model' => array('type' => 'int', 'id' => 152),
-    'model_year' => array('type' => 'varchar', 'id' => 141),
-    'x_mmx_race_edition' => array('type' => 'int', 'id' => 155),
-    'race_edition_year' => array('type' => 'varchar', 'id' => 150),
-    'x_mmx_driver' => array('type' => 'many2many', 'id' => 151),
-    'year' => array('type' => 'varchar', 'id' => 139),
-);
-
-$sql = '';
-
-$sql_int = '';
-$sql_varchar = '';
-$sql_many2many = '';
-$arr_int = array();
-$arr_varchar = array();
-$arr_many2many = array();
-
-foreach($fields as $key => $field) {
-    $res[$key] = array('' => '');
-    // make an inner join for every field that we want to filter with a value
-    if(isset($_POST[$key]) and !empty($_POST[$key])) {
-         ${'sql_' . $field['type']} .= "INNER JOIN catalog_product_entity_".$field['type']." AS at_". $key ."\n\t
-                                        ON  (product.entity_id = at_". $key .".entity_id and at_". $key .".value = '".addslashes($_POST[$key])."')";
-    } else {
-        // fields that are not filtered by value but by other field.
-        ${'arr_' . $field['type']}[] = $field['id'];
+$pdt_ids = array();
+$fields = unserialize(SEARCH_FIELDS);
+foreach($fields as $field) {
+    $products = Mage::getModel('catalog/product')->getCollection()
+                                                 ->addAttributeToSelect($field);
+    if (isset($_POST['category']) and !empty($_POST['category']))  {
+        $category = Mage::getModel('catalog/category')->load((int)$_POST['category']);
+        $products->addCategoryFilter($category);
     }
-}
+    foreach($fields as $field2) {
+        if($field == $field2)
+            continue;
+        if(isset($_POST[$field2]) and !empty($_POST[$field2])) {
+	    if(in_array($field2, unserialize(SEARCH_FIELDS_MULTIPLE)) == True) {
+		$products->addAttributeToFilter(array(array('attribute' => $field2, 'eq' => $_POST[$field2]),
+                                array('attribute' => $field2, 'like' => '%,'.$_POST[$field2].'%'),
+                                array('attribute' => $field2, 'like' => '%'.$_POST[$field2].',%')));
+            } elseif(strpos($field2 ,'x_') == True) {
+                $products->addAttributeToFilter($field2, (int) $_POST[$field2]);
+	    } else {
+                $products->addAttributeToFilter($field2, array('eq' => $_POST[$field2]));
+            }
+        }
+    }
 
-
-// Build the sql for char attribute
-if(count($arr_varchar) > 0) {
-    $sql .= "SELECT eav.attribute_code as code, attribute.value as column_id, attribute.value as label\n
-            FROM catalog_product_entity as product\n
-            INNER JOIN catalog_category_product_index AS cat_index\n\t
-                ON cat_index.product_id=product.entity_id AND cat_index.category_id='".(int)$_POST['category']."'";
-
-    $sql .= $sql_varchar;
-    $sql .= "INNER JOIN catalog_product_entity_varchar AS attribute\n\t
-                 ON  (attribute.entity_id = product.entity_id and attribute.attribute_id in (". implode(',', $arr_varchar)."))\n
-             INNER JOIN eav_attribute AS eav\n\t
-                ON eav.attribute_id = attribute.attribute_id GROUP BY code, column_id, label\n";
+    $method_name = explode('_', $field);
+    $method_name =  array_map('ucfirst', $method_name);
+    $method_name =  implode('', $method_name);
+    $attribute = $products->getResource()->getAttribute($field);
+    $values = array();
+    $res[$field]['default'] = '-- '. $this->__('All') .' '. $attribute->getFrontendLabel().'s --';
+    $attribute_model = Mage::getModel('eav/entity_attribute');
+    $pdt_ids = array();
+    foreach($products as $product) {
+	$pdt_ids[] = $product->getId();
+        if(in_array($field, unserialize(SEARCH_FIELDS_MULTIPLE))) {
+  
+            $source = Mage::getModel('catalog/product')->getResource()->getAttribute($field)->getSource();
+            $value = str_replace('"', '', call_user_func(array($product, 'get'.$method_name)));
+            $mvalues = explode(',', $value);
+            $i = 0;
+            if(count($mvalues) > 1) {
+               #foreach($mvalues as $v) { 
+               # if(!empty($v) and isset($product->getAttributeText($field)[$i])) {
+               #     $values[$v] = $product->getAttributeText($field)[$i];
+               # }
+               # $i++;
+              #}
+            } else {
+		if(!empty($value))
+                    $values[$value] = $product->getAttributeText($field);
+            }
+        }
+        else {
+            $value = $product->getAttributeText($field);
+	    $key = str_replace('"', '', call_user_func(array($product, 'get'.$method_name)));
+	    if(empty($value)) {
+                $value = $key;
+            }
+            if(empty($key))
+                continue;
+            if(in_array($key, $values)) {
+                continue;
+            }
+          
+            $values[$key] = $value;
+       }
+    }
+    asort($values);
+    $res[$field] +=  $values;
 }
- 
-// check if union is needed   
-if($sql != '' and count($arr_int) > 0) {
-    $sql .= 'UNION ';
-}
-
-// Build the sql for int
-if(count($arr_int) > 0) {
-    $sql .= "SELECT eav.attribute_code as code, attribute.value as column_id, attribute_label.value as label\n
-            FROM catalog_product_entity as product\n
-            INNER JOIN catalog_category_product_index AS cat_index\n\t
-                ON cat_index.product_id=product.entity_id AND cat_index.category_id='".(int)$_POST['category']."'";
-    $sql .= $sql_int;
-    $sql .= "INNER JOIN catalog_product_entity_int AS attribute\n\t
-                ON  (attribute.entity_id = product.entity_id and attribute.attribute_id in (". implode(',', $arr_int)."))\n
-            INNER JOIN eav_attribute_option_value AS attribute_label\n\t
-                ON(attribute.value = attribute_label.option_id)\n
-            INNER JOIN eav_attribute AS eav\n\t
-                ON eav.attribute_id = attribute.attribute_id GROUP BY code, column_id, label\n";
-}
-
-// check if union is needed   
-if($sql != '' and count($arr_many2many) > 0) {
-    $sql .= 'UNION ';
-}
-
-// Build the sql for many2many
-if(count($arr_many2many) > 0) {
-    $sql .= "SELECT eav.attribute_code as code, SUBSTRING_INDEX(SUBSTRING_INDEX(attribute.value, ',', numbers.n), ',', -1) as column_id, attribute_label.value as label\n
-            FROM catalog_product_entity as product\n
-            INNER JOIN catalog_category_product_index AS cat_index\n\t
-                ON cat_index.product_id=product.entity_id AND cat_index.category_id='".(int)$_POST['category']."'";
-    $sql .= $sql_many2many;
-    $sql .= "INNER JOIN catalog_product_entity_int AS attribute\n\t
-                ON  (attribute.entity_id = product.entity_id and attribute.attribute_id in (". implode(',', $arr_many2many)."))\n
-	    INNER JOIN numbers 
-         	ON CHAR_LENGTH(attribute.value) - CHAR_LENGTH(REPLACE(attribute.value, ',', '')) >=numbers.n-1\n
-            INNER JOIN eav_attribute_option_value AS attribute_label\n\t
-                ON(attribute_label.option_id = SUBSTRING_INDEX(SUBSTRING_INDEX(attribute.value, ',', numbers.n), ',', -1))\n
-            INNER JOIN eav_attribute AS eav\n\t
-                ON eav.attribute_id = attribute.attribute_id GROUP BY code, column_id, label\n";
-}
-// execute sql request
-$resource = Mage::getSingleton('core/resource');
-$readConnection = $resource->getConnection('core_read');
-$rows = $readConnection->fetchAll($sql);
-
-// prepare array for json
-foreach($rows as $row) {
-    $res[$row['code']][$row['column_id']] = $row['label'];
-}
+$_SESSION['temp_product_collection'] = $pdt_ids;
 echo json_encode($res);
 ?>
