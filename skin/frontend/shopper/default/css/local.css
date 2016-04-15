@@ -511,7 +511,7 @@ footer address{ margin-left:10px; }
 .nav-container .nav-top-title.active div.icon span {background:#fff; }
 .nav-container li.parent em {float:right; display:none; width:36px; text-align:center; font-style:normal; font-weight:700; }
 .nav-container li.parent em:hover {cursor:pointer; background:#fff; color:#000 !important; }
-#queldoreiNav { margin:31px 0 34px 0; padding:0; position:relative; border:none; float:left; max-width: 823px;}
+#queldoreiNav { margin:31px 0 34px 0; padding:0; position:relative; border:none; float:left; max-width: 747px;}
 /*#queldoreiNav { width:750px; margin:31px 0 34px 46px; padding:0; position:relative; border:none; float:left; }*/
 .search-field #queldoreiNav {width:560px}
 .below-logo #queldoreiNav {width:auto; margin:0 0 10px 3px}
